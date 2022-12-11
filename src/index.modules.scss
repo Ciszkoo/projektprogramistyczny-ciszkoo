@@ -1,0 +1,13 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+
+  html {
+    font-family: sans-serif;
+  }
+
+  body,
+  #root {
+    height: 100vh;
+  }
+}
