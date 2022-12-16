@@ -1,6 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { useLogin } from "../context/LoginProvider";
+import { useAuth } from "../context/AuthProvider";
 
 interface IFormInput {
   email: string;
@@ -20,12 +20,14 @@ const LoginForm = (props: LoginFormProps) => {
     handleSubmit,
   } = useForm<IFormInput>();
 
-  const { loginHandler } = useLogin();
+  const { authHandler } = useAuth();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) =>
-    data.email === userTenant.email && data.password === userTenant.password
-      ? loginHandler()
-      : console.log("niezalogowano");
+  const onSubmit: SubmitHandler<IFormInput> = () => authHandler();
+  
+  // const onSubmit: SubmitHandler<IFormInput> = (data) =>
+  //   data.email === userTenant.email && data.password === userTenant.password
+  //     ? authHandler()
+  //     : console.log("niezalogowano");
 
   return (
     <form

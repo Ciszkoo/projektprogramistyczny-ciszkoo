@@ -2,12 +2,12 @@ import { useState } from "react";
 
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
-import { useLogin } from "../context/LoginProvider";
+import { useAuth } from "../context/AuthProvider";
 
-const HomePage = () => {
+const LoginPage = () => {
   const [isRegister, setIsRegister] = useState<boolean>(false);
 
-  const { isLogin } = useLogin();
+  const { isAuth } = useAuth();
 
   const handleSignUp = () => {
     setIsRegister(true);
@@ -19,13 +19,13 @@ const HomePage = () => {
 
   return (
     <>
-      {isLogin && <h1>Strona główna</h1>}
-      {!isLogin && isRegister && (
+      {isAuth && <h1>Strona główna</h1>}
+      {!isAuth && isRegister && (
         <RegisterForm setIsRegister={handleCloseSignUp} />
       )}
-      {!isLogin && !isRegister && <LoginForm setIsRegister={handleSignUp} />}
+      {!isAuth && !isRegister && <LoginForm setIsRegister={handleSignUp} />}
     </>
   );
 };
 
-export default HomePage;
+export default LoginPage;
