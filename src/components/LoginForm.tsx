@@ -11,8 +11,6 @@ interface LoginFormProps {
   setIsRegister: () => void;
 }
 
-const userTenant: IFormInput = { email: "user@user.com", password: "user" };
-
 const LoginForm = (props: LoginFormProps) => {
   const {
     register,
@@ -22,12 +20,7 @@ const LoginForm = (props: LoginFormProps) => {
 
   const { authHandler } = useAuth();
 
-  const onSubmit: SubmitHandler<IFormInput> = () => authHandler();
-  
-  // const onSubmit: SubmitHandler<IFormInput> = (data) =>
-  //   data.email === userTenant.email && data.password === userTenant.password
-  //     ? authHandler()
-  //     : console.log("niezalogowano");
+  const onSubmit: SubmitHandler<IFormInput> = (data) => authHandler(data);
 
   return (
     <form

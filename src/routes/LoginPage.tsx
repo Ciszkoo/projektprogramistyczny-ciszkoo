@@ -19,7 +19,6 @@ const LoginPage = () => {
 
   return (
     <>
-      {isAuth && <h1>Strona główna</h1>}
       {!isAuth && isRegister && (
         <RegisterForm setIsRegister={handleCloseSignUp} />
       )}
