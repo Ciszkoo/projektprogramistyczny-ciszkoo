@@ -1,28 +1,31 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-
-type Gender = "male" | "female" | "other";
-
-interface IFormInput {
-  name: string;
-  surname: string;
-  email: string;
-  password: string;
-  gender: Gender;
-}
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface RegisterFormProps {
   setIsRegister: () => void;
 }
 
-// const userTenant: IFormInput = { email: "user@user.com", password: "user" };
+const RegisterSchema = z.object({
+  name: z.string(),
+  surname: z.string(),
+  email: z.string().email(),
+  password: z.string().min(6),
+  gender: z.enum(["female", "male", "other"]),
+});
+
+type RegisterFormSchemaType = z.infer<typeof RegisterSchema>;
 
 const RegisterForm = (props: RegisterFormProps) => {
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm<IFormInput>();
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  } = useForm<RegisterFormSchemaType>({
+    resolver: zodResolver(RegisterSchema),
+  });
+  const onSubmit: SubmitHandler<RegisterFormSchemaType> = (data) =>
+    console.log(data);
 
   return (
     <form
@@ -33,22 +36,26 @@ const RegisterForm = (props: RegisterFormProps) => {
       <input
         className={`input-sign ${errors.email && "invalid"}`}
         placeholder="Imię"
-        {...register("name", { required: true })}
+        {...register("name")}
+        disabled={isSubmitting}
       />
       <input
         className={`input-sign ${errors.email && "invalid"}`}
         placeholder="Nazwisko"
-        {...register("surname", { required: true })}
+        {...register("surname")}
+        disabled={isSubmitting}
       />
       <input
         className={`input-sign ${errors.email && "invalid"}`}
         placeholder="Adres e-mail"
-        {...register("email", { required: true })}
+        {...register("email")}
+        disabled={isSubmitting}
       />
       <input
         className={`input-sign ${errors.email && "invalid"}`}
         placeholder="Hasło"
-        {...register("password", { required: true })}
+        {...register("password")}
+        disabled={isSubmitting}
       />
       <select {...register("gender")}>
         <option value="female">female</option>

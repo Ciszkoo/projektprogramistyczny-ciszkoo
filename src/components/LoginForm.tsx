@@ -1,26 +1,31 @@
 import { useForm, SubmitHandler } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAuth } from "../context/AuthProvider";
-
-interface IFormInput {
-  email: string;
-  password: string;
-}
 
 interface LoginFormProps {
   setIsRegister: () => void;
 }
 
+const LoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+type LoginFormSchemaType = z.infer<typeof LoginSchema>;
+
 const LoginForm = (props: LoginFormProps) => {
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm<IFormInput>();
+  } = useForm<LoginFormSchemaType>({ resolver: zodResolver(LoginSchema) });
 
   const { authHandler } = useAuth();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => authHandler(data);
+  const onSubmit: SubmitHandler<LoginFormSchemaType> = (data) =>
+    authHandler(data);
 
   return (
     <form
@@ -31,12 +36,14 @@ const LoginForm = (props: LoginFormProps) => {
         <input
           className={`input-sign ${errors.email && "invalid"}`}
           placeholder="Adres e-mail"
-          {...register("email", { required: true })}
+          {...register("email")}
+          disabled={isSubmitting}
         />
         <input
-          className={`input-sign ${errors.email && "invalid"}`}
+          className={`input-sign ${errors.password && "invalid"}`}
           placeholder="Hasło"
-          {...register("password", { required: true })}
+          {...register("password")}
+          disabled={isSubmitting}
         />
         <button type="submit">Zaloguj</button>
       </div>
