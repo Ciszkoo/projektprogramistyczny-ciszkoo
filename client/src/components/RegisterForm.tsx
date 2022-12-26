@@ -57,7 +57,7 @@ const RegisterForm = (props: RegisterFormProps) => {
         {...register("password")}
         disabled={isSubmitting}
       />
-      <select {...register("gender")}>
+      <select className="input-sign" {...register("gender")}>
         <option value="female">female</option>
         <option value="male">male</option>
         <option value="other">other</option>
