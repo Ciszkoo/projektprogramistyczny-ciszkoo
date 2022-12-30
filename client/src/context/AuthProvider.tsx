@@ -22,7 +22,7 @@ export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   // TEMP
-  const userTenant: IFormInput = { email: "user@user.com", password: "user123" };
+  const userTenant: IFormInput = { email: "user@user.com", password: "user123user" };
 
   const navigate = useNavigate();
 

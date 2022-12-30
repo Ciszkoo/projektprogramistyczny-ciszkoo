@@ -20,7 +20,7 @@ export const createUserSchema = object({
     })
       .min(8, "Password is too short - should be min 8 chars")
       .max(50, "Password is too long - should be max 50 chars"),
-    dateOfBirth: string({
+    dateOfBirth: string({       // todo - use date type
       required_error: "Date of birth is required",
     }),
     gender: zenum(["male", "female", "other"], {

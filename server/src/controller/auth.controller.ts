@@ -19,14 +19,17 @@ export const createSessionHandler = async (
 
   try {
     const user = await getUserByEmail(email);
-    await user.validatePassword(password);
+    const isPasswordValid = await user.validatePassword(password);
+    if (!isPasswordValid) {
+      return res.status(404).send("Invalid email or password");
+    }
     const accessToken = signAccessToken(user);
     const refreshToken = await signRefreshToken(user.email);
 
-    return res.send({ accessToken, refreshToken });
+    return res.status(200).send({ accessToken, refreshToken });
   } catch {
     log.error("Could not create session");
-    return res.send("Invalid email or password");
+    return res.status(404).send("Invalid email or password");
   }
 };
 

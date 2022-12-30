@@ -13,7 +13,6 @@ const validateResource =
       });
       next();
     } catch (e: any) {
-      log.error(e.errors, "Could not validate resource")
       return res.status(400).send(e.errors);
     }
   };

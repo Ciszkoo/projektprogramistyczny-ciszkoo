@@ -14,7 +14,7 @@ export const createUserHandler = async (
   try {
     await createUser(userCandidate);
 
-    return res.send("User created");
+    return res.status(201).send("User created");
   } catch (error) {
     if (error instanceof AlreadyExistsError) {
       log.error(error.message);

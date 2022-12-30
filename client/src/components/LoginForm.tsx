@@ -10,7 +10,7 @@ interface LoginFormProps {
 
 const LoginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(8).max(50),
 });
 
 type LoginFormSchemaType = z.infer<typeof LoginSchema>;

@@ -6,8 +6,11 @@ import driver from "./utils/neoDriver";
 import logger from "./utils/logger";
 import router from "./routes/index";
 import deserializeUser from "./middleware/deserializeUser";
+import cors from "./middleware/cors";
 
 const app = express();
+
+app.use(cors);
 
 app.use(express.json());
 
