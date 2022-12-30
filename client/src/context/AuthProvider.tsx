@@ -1,4 +1,11 @@
-import { createContext, useContext, PropsWithChildren, useState } from "react";
+import {
+  createContext,
+  useContext,
+  PropsWithChildren,
+  useState,
+  useEffect,
+} from "react";
+import { useCookies } from "react-cookie";
 
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +14,6 @@ interface IAuthContext {
   authHandler: (data: IFormInput) => void;
 }
 
-// TEMP
 interface IFormInput {
   email: string;
   password: string;
@@ -21,22 +27,36 @@ const AuthContext = createContext<IAuthContext>({
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-  // TEMP
-  const userTenant: IFormInput = { email: "user@user.com", password: "user123user" };
+  const [cookies, setCookie, removeCookie] = useCookies();
 
   const navigate = useNavigate();
 
   const [isAuth, setIsAuth] = useState<boolean>(false);
 
-  const authHandler = (data: IFormInput) => {
-    if (
-      data.email === userTenant.email &&
-      data.password === userTenant.password
-    ) {
-      setIsAuth(() => !isAuth);
+  useEffect(() => {
+    if (isAuth) {
       navigate("/home");
-    } else {
-      console.log("Niepoprawne dane logowania");
+    }
+  }, [isAuth]);
+
+  const authHandler = async (data: IFormInput) => {
+    const res = await fetch("http://localhost:5000/api/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+    if (!res.ok) {
+      console.log("Błąd logowania");
+      return;
+    }
+    if (res.ok) {
+      const {accessToken, refreshToken} = await res.json();
+      setCookie("accessToken", accessToken, {maxAge: 15 * 60});
+      setCookie("refreshToken", refreshToken, {maxAge: 60 * 60 * 24 * 7});
+      console.log("Udało się zalogować");
+      setIsAuth(() => !isAuth);
     }
   };
 
