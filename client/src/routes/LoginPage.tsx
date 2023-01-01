@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
@@ -6,8 +6,13 @@ import { useAuth } from "../context/AuthProvider";
 
 const LoginPage = () => {
   const [isRegister, setIsRegister] = useState<boolean>(false);
+  const [isAuthWrap, setIsAuthWrap] = useState<boolean>(false);
 
   const { isAuth } = useAuth();
+
+  useEffect(() => {
+    setIsAuthWrap(isAuth);
+  }, [isAuth]);
 
   const handleSignUp = () => {
     setIsRegister(true);
@@ -19,10 +24,10 @@ const LoginPage = () => {
 
   return (
     <>
-      {!isAuth && isRegister && (
+      {!isAuthWrap && isRegister && (
         <RegisterForm setIsRegister={handleCloseSignUp} />
       )}
-      {!isAuth && !isRegister && <LoginForm setIsRegister={handleSignUp} />}
+      {!isAuthWrap && !isRegister && <LoginForm setIsRegister={handleSignUp} />}
     </>
   );
 };
