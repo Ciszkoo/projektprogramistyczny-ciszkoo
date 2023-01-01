@@ -44,6 +44,7 @@ const LoginForm = (props: LoginFormProps) => {
           placeholder="Hasło"
           {...register("password")}
           disabled={isSubmitting}
+          type="password"
         />
         <button type="submit">Zaloguj</button>
       </div>
