@@ -45,7 +45,7 @@ const RegisterForm = (props: RegisterFormProps) => {
 
   return (
     <form
-      className="h-screen flex flex-col justify-center items-center"
+      className="flex flex-col flex-auto justify-center items-center"
       onSubmit={handleSubmit(onSubmit)}
     >
       <button onClick={props.setIsRegister}>&lt;&lt; Powrót </button>

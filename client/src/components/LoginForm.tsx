@@ -29,7 +29,7 @@ const LoginForm = (props: LoginFormProps) => {
 
   return (
     <form
-      className="h-screen flex flex-col justify-center items-center"
+      className="flex flex-col flex-auto justify-center items-center"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex flex-col">

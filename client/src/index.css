@@ -4,11 +4,11 @@
 
 @layer components {
   .input-sign {
-    @apply border-solid border-blue-400 border-2 rounded-lg p-1 mb-1
+    @apply border-solid border-blue-400 border-2 rounded-lg p-1 mb-1;
   }
 
   .invalid {
-    @apply bg-red-300
+    @apply bg-red-300;
   }
 }
 
@@ -16,10 +16,11 @@
   box-sizing: border-box;
   margin: 0;
   font-family: Verdana, Geneva, sans-serif;
-
 }
 
 body,
 #root {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
