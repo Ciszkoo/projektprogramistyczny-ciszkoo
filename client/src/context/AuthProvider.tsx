@@ -8,6 +8,8 @@ import {
 import { useCookies } from "react-cookie";
 
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../reducers/hooks";
+import { fetchUserData, selectUser } from "../reducers/userReducer";
 
 interface IAuthContext {
   isAuth: boolean;
@@ -29,11 +31,15 @@ const AuthContext = createContext<IAuthContext>({
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
+  const user = useAppSelector(selectUser);
+
   const [cookies, setCookie, removeCookie] = useCookies();
 
   const navigate = useNavigate();
 
   const [isAuth, setIsAuth] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
 
   useLayoutEffect(() => {
     if (isAuth) {
@@ -67,26 +73,17 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         }
       }
       if (cookies.accessToken && cookies.refreshToken) {
-        setIsAuth(true);
-        const res = await fetch("http://localhost:5000/api/users/me", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${cookies.accessToken}`,
-          },
-        });
-        if (!res.ok) {
-          console.log("Błąd autoryzacji");
-          return;
-        }
-        if (res.ok) {
-          const user = await res.json();
-          console.log(user);
+        try {
+          setIsAuth(true);
+          await dispatch(fetchUserData(cookies.accessToken));
+        } catch (error) {
+          console.log(error);
           return;
         }
       }
     };
     accessing();
-  }, [cookies, setCookie]);
+  }, [cookies, setCookie, dispatch]);
 
   const authHandler = async (data: IFormInput) => {
     const res = await fetch("http://localhost:5000/api/session", {
@@ -105,14 +102,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       setCookie("accessToken", accessToken, { maxAge: 14 * 60 });
       setCookie("refreshToken", refreshToken, { maxAge: 60 * 60 * 24 * 7 });
       console.log("Udało się zalogować");
-      // setIsAuth(() => !isAuth);
     }
   };
 
   const logoutHandler = () => {
     removeCookie("accessToken");
     removeCookie("refreshToken");
-    // setIsAuth(() => !isAuth);
   };
 
   return (
