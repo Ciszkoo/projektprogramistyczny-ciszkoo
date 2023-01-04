@@ -8,8 +8,8 @@ import {
 import { useCookies } from "react-cookie";
 
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../reducers/hooks";
-import { fetchUserData, selectUser } from "../reducers/userReducer";
+import { useAppDispatch } from "../reducers/hooks";
+import { fetchUserData } from "../reducers/userReducer";
 
 interface IAuthContext {
   isAuth: boolean;
@@ -31,8 +31,6 @@ const AuthContext = createContext<IAuthContext>({
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-  const user = useAppSelector(selectUser);
-
   const [cookies, setCookie, removeCookie] = useCookies();
 
   const navigate = useNavigate();

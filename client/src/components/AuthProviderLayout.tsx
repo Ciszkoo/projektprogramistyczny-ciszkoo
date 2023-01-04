@@ -1,10 +1,11 @@
 import { Outlet } from "react-router";
 import AuthProvider from "../context/AuthProvider";
+import NavBar from "./NavBar/NavBar";
 
 const AuthProviderLayout = () => {
   return (
     <AuthProvider>
-      <nav className="bg-blue-400 h-12 flex-initial"></nav>
+      <NavBar />
       <Outlet />
     </AuthProvider>
   );

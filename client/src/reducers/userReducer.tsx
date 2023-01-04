@@ -1,29 +1,39 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { getAuthorized } from "../utils/utils";
+
+interface UserData {
+  name: string;
+  surname: string;
+  email: string;
+  dateOfBirth: string;
+  gender: string;
+  iat: number;
+  exp: number;
+}
 
 export const fetchUserData = createAsyncThunk(
   "user/fetchData",
   async (key: string, thunkApi) => {
-    const res = await fetch("http://localhost:5000/api/users/me", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${key}`,
-      },
-    });
-    const data = await res.json();
-    return await JSON.parse(JSON.stringify(data));
+    try {
+      const res = await getAuthorized("http://localhost:5000/api/users/me", key);
+      const data: UserData = await res.json();
+      return await JSON.parse(JSON.stringify(data));
+    } catch {
+      thunkApi.rejectWithValue("Błąd autoryzacji");
+    }
   }
 );
 
 interface UserState {
-  data: Object;
+  data: Partial<UserData>;
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 
-const initialState = {
-  data: Object,
+const initialState: UserState = {
+  data: {},
   status: "idle",
-} as UserState;
+};
 
 export const userSlice = createSlice({
   name: "user",

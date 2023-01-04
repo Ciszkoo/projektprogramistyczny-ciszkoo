@@ -8,7 +8,7 @@ import "./index.css";
 import LoginPage from "./routes/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { store } from "./store";
-import Temp from "./components/Temp";
+import UserPage from "./routes/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
         path: "/home",
         element: (
           <ProtectedRoute>
-            <Temp />
+            <UserPage />
           </ProtectedRoute>
         ),
       },
