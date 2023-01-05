@@ -17,7 +17,7 @@ export const searchController = async (
     const pickedRes = result.map((user) =>
       pick(user, ["name", "surname", "email"])
     );
-    return res.send(`${JSON.stringify(pickedRes)}`);
+    return res.send(pickedRes);
   } catch (error) {
     return res.status(404).send({ err: "Could not find users" });
   }

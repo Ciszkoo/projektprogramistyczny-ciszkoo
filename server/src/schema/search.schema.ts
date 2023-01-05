@@ -4,7 +4,9 @@ export const searchSchema = object({
   body: object({
     query: string({
       required_error: "Content is required",
-    }).max(50, "Content is too long - should be max 50 chars"),
+    })
+      .min(1, "Content is too short - should be min 2 chars")
+      .max(50, "Content is too long - should be max 50 chars"),
   }),
 });
 

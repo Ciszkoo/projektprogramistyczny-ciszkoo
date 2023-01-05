@@ -21,7 +21,7 @@ app.use(
     store: new Neo4jStore({ client: driver }),
     saveUninitialized: false,
     secret: config.get<string>("sessionSecret"),
-    resave: false,
+    resave: true,
     cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, sameSite: false },
   })
 );

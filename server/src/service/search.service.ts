@@ -7,7 +7,7 @@ export const search = async (query: string) => {
 
   try {
     const result = await session.run(
-      "MATCH (u:User) WHERE u.name =~ $exp OR u.surname =~ $exp RETURN u",
+      "MATCH (u:User) WHERE u.name =~ $exp OR u.surname =~ $exp RETURN u LIMIT 2",
       {
         exp,
       }
