@@ -17,7 +17,7 @@ export const createUser = async (user: User) => {
     log.info(`User created, ${node.properties.name}`);
   } catch (e) {
     if (e instanceof Neo4jError) {
-      log.error(e.message)
+      log.error(e.message);
       throw new AlreadyExistsError("User already exists");
     }
     throw new Error("Could not create user");
@@ -28,7 +28,7 @@ export const createUser = async (user: User) => {
 
 export const getUserByEmail = async (email: string) => {
   const session = driver.session();
-  
+
   try {
     const result = await session.run(
       "MATCH (u:User {email: $email}) RETURN u",
@@ -37,8 +37,9 @@ export const getUserByEmail = async (email: string) => {
       }
     );
     const node = result.records[0].get(0);
-    return new User({...node.properties});
+    return new User({ ...node.properties });
   } catch (e) {
+    log.error("Could not get user");
     throw new Error("Could not get user1");
   } finally {
     await session.close();

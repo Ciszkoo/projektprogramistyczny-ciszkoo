@@ -9,6 +9,9 @@ import LoginPage from "./routes/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { store } from "./store";
 import UserPage from "./routes/UserPage";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 const router = createBrowserRouter([
   {

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
-import { createUser } from "../service/user.service";
+import { createUser, getUserByEmail } from "../service/user.service";
 import { AlreadyExistsError } from "../utils/errors";
 import log from "../utils/logger";
+import { omit } from "lodash";
 
 export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
@@ -14,17 +15,27 @@ export const createUserHandler = async (
   try {
     await createUser(userCandidate);
 
-    return res.status(201).send("User created");
+    return res.status(201).send({ message: "User created" });
   } catch (error) {
     if (error instanceof AlreadyExistsError) {
       log.error(error.message);
-      return res.status(409).send(error.message);
+      return res.status(409).send({ err: error.message });
     }
     log.error("Could not create user");
-    return res.status(500).send("Could not create user");
+    return res.status(500).send({ err: "Could not create user" });
   }
 };
 
 export const getCurrentUserHandler = async (req: Request, res: Response) => {
-  return res.send(res.locals.user);
+  log.info("Current user", req.session);
+  try {
+    const user = await getUserByEmail(req.session.passport?.user as string);
+    return res.status(200).send(omit(user, ["password"]));
+  } catch (error) {
+    return res.status(500).send({ err: "Could not get user" });
+  }
+};
+
+export const loginHandler = (_: Request, res: Response) => {
+  return res.status(200).send({ message: "Logged in" });
 };

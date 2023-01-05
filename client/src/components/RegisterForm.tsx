@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios, { AxiosError } from "axios";
 
 interface RegisterFormProps {
   setIsRegister: () => void;
@@ -26,20 +27,16 @@ const RegisterForm = (props: RegisterFormProps) => {
     resolver: zodResolver(RegisterSchema),
   });
   const onSubmit: SubmitHandler<RegisterFormSchemaType> = async (data) => {
-    const res = await fetch("http://localhost:5000/api/users/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      console.log("Błąd rejestracji");
-      return;
-    }
-    if (res.ok) {
-      console.log("Udało się założyć konto");
+    try {
+      await axios.post("http://localhost:5000/api/users/create", data);
+      console.log("Account created");
       props.setIsRegister();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+        return;
+      }
+      console.log(error);
     }
   };
 
