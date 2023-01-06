@@ -60,7 +60,7 @@ const Search = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div
-          className={`bg-blue-300 h-10 w-80 ml-2 flex items-center justify-center ${
+          className={`bg-violet-300 ml-2 h-10 w-80 flex items-center justify-center ${
             searchResult.length === 0 || !isFocused
               ? "rounded-full"
               : "rounded-t-lg"
@@ -79,7 +79,7 @@ const Search = () => {
         </div>
       </form>
       {searchResult.length > 0 && isFocused && (
-        <ul className="fixed top-11 bg-blue-300 ml-2 w-80 rounded-b-lg">
+        <ul className="fixed top-11 bg-violet-300 ml-14 w-80 rounded-b-lg">
           {searchResult.map((res, index) => {
             return (
               <li className="text-center p-2" key={index}>

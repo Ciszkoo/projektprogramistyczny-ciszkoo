@@ -4,12 +4,12 @@ import {
   useContext,
   PropsWithChildren,
   useState,
-  useLayoutEffect,
+  useEffect,
 } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../reducers/hooks";
-import { fetchUserData } from "../reducers/userReducer";
+import { useAppDispatch, useAppSelector } from "../reducers/hooks";
+import { fetchUserData, selectUser } from "../reducers/userReducer";
 
 interface IAuthContext {
   isAuth: boolean;
@@ -37,18 +37,24 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const dispatch = useAppDispatch();
 
-  useLayoutEffect(() => {
-    if (isAuth) {
-      navigate("/home");
-      dispatch(fetchUserData());
-    }
-  }, [isAuth, navigate, dispatch]);
+  const user = useAppSelector(selectUser);
+
+  useEffect(() => {
+    const eff = async () => {
+      if (isAuth) {
+        await dispatch(fetchUserData());
+        navigate(`/dashboard`);
+      }
+    };
+    eff();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuth, dispatch]);
 
   const authHandler = async (data: IFormInput) => {
     try {
       await axios.post("http://localhost:5000/api/users/login", data);
-      setIsAuth(true);
       console.log("Udało się zalogować");
+      setIsAuth(true);
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error.message);

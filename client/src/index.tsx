@@ -10,6 +10,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import { store } from "./store";
 import UserPage from "./routes/UserPage";
 import axios from "axios";
+import UserInfoPage from "./routes/UserInfoPage";
 
 axios.defaults.withCredentials = true;
 
@@ -22,13 +23,29 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        path: "/home",
+        path: "/dashboard",
+        element: (
+          <ProtectedRoute>
+            <p>Dashboard</p>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/user/:id",
         element: (
           <ProtectedRoute>
             <UserPage />
           </ProtectedRoute>
         ),
       },
+      // {
+      //   path: "/user/:id/edit",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <UserInfoPage />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "*",
         element: <h1>404</h1>,

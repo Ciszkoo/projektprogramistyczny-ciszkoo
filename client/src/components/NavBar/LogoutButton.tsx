@@ -6,7 +6,7 @@ const LogoutButton = () => {
 
   return (
     <button
-      className="bg-blue-300 h-10 mr-2 rounded-full w-24"
+      className="bg-violet-400 h-10 rounded-full w-24 mr-2"
       onClick={logoutHandler}
     >
       Logout

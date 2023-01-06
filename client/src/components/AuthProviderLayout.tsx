@@ -6,7 +6,9 @@ const AuthProviderLayout = () => {
   return (
     <AuthProvider>
       <NavBar />
-      <Outlet />
+      <div className="flex-auto bg-violet-100 flex">
+        <Outlet />
+      </div>
     </AuthProvider>
   );
 };
