@@ -1,8 +1,6 @@
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
-import { useAppSelector } from "../../reducers/hooks";
-import { selectUser } from "../../reducers/userReducer";
 import EditModal from "./EditModal";
 
 interface UserDataFieldProps {

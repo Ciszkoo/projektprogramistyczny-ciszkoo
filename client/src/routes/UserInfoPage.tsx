@@ -1,21 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-// import EditForm from "../components/EditForm";
 import { useAppSelector } from "../reducers/hooks";
 import { selectUser } from "../reducers/userReducer";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { createPortal } from "react-dom";
-import EditModal from "../components/UserEdit/EditModal";
 import UserDataField from "../components/UserEdit/UserDataField";
 
 const UserInfoPage = () => {
   const user = useAppSelector(selectUser);
-
-  const [showModal, setShowModal] = useState(false);
-
-  const closeModalHandler = () => {
-    setShowModal(false);
-  };
 
   return (
     <div className="flex flex-col m-20">
@@ -27,11 +17,11 @@ const UserInfoPage = () => {
       </div>
       {/* <EditForm /> */}
       <div className="flex flex-col text-lg mt-10">
-        <UserDataField label="Imię" value={user.data.name}/>
-        <UserDataField label="Nazwisko" value={user.data.surname}/>
-        <UserDataField label="E-mail" value={user.data.email}/>
-        <UserDataField label="Data urodzenia" value={user.data.dateOfBirth}/>
-        <UserDataField label="Płeć" value={user.data.gender}/>
+        <UserDataField label="Imię" value={user.data.name} />
+        <UserDataField label="Nazwisko" value={user.data.surname} />
+        <UserDataField label="E-mail" value={user.data.email} />
+        <UserDataField label="Data urodzenia" value={user.data.dateOfBirth} />
+        <UserDataField label="Płeć" value={user.data.gender} />
       </div>
     </div>
   );
