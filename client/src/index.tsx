@@ -37,15 +37,13 @@ const router = createBrowserRouter([
             <UserPage />
           </ProtectedRoute>
         ),
+        children: [
+          {
+            path: "edit",
+            element: <UserInfoPage />,
+          },
+        ],
       },
-      // {
-      //   path: "/user/:id/edit",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <UserInfoPage />
-      //     </ProtectedRoute>
-      //   ),
-      // },
       {
         path: "*",
         element: <h1>404</h1>,
