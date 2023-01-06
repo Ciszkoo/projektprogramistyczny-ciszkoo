@@ -18,10 +18,10 @@ app.use(express.json());
 
 app.use(
   session({
-    store: new Neo4jStore({ client: driver }),
+    // store: new Neo4jStore({ client: driver }),
     saveUninitialized: false,
     secret: config.get<string>("sessionSecret"),
-    resave: true,
+    resave: false,
     cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, sameSite: false },
   })
 );
