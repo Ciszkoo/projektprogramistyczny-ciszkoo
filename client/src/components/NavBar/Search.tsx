@@ -37,6 +37,7 @@ const Search = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const search = watch("query");
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const Search = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [watch]);
+  }, [watch, handleSubmit]);
 
   return (
     <>

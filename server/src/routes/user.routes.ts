@@ -4,6 +4,7 @@ import {
   createUserHandler,
   getCurrentUserHandler,
   loginHandler,
+  logoutHandler,
 } from "../controller/user.controller";
 import validateResource from "../middleware/validateResource";
 import { loginSchema } from "../schema/auth.schema";
@@ -18,6 +19,8 @@ router.post(
   passport.authenticate("local"),
   loginHandler
 );
+
+router.post("/api/users/logout", isAuth, logoutHandler);
 
 router.post(
   "/api/users/create",

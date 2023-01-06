@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
 import { createUser, getUserByEmail } from "../service/user.service";
@@ -38,4 +38,13 @@ export const getCurrentUserHandler = async (req: Request, res: Response) => {
 
 export const loginHandler = (_: Request, res: Response) => {
   return res.status(200).send({ message: "Logged in" });
+};
+
+export const logoutHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  req.logout((err) => next(err));
+  return res.status(200).send({ message: "Logged out" });
 };

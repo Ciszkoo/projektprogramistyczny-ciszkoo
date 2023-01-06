@@ -14,6 +14,7 @@ import { fetchUserData } from "../reducers/userReducer";
 interface IAuthContext {
   isAuth: boolean;
   authHandler: (data: IFormInput) => void;
+  logoutHandler: () => void;
 }
 
 interface IFormInput {
@@ -24,6 +25,7 @@ interface IFormInput {
 const AuthContext = createContext<IAuthContext>({
   isAuth: false,
   authHandler: () => {},
+  logoutHandler: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -44,12 +46,23 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const authHandler = async (data: IFormInput) => {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/users/login",
-        data
-      );
+      await axios.post("http://localhost:5000/api/users/login", data);
       setIsAuth(true);
-      console.log(`Udało się zalogować ${res.status}`);
+      console.log("Udało się zalogować");
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.message);
+        return;
+      }
+      console.log(error);
+    }
+  };
+
+  const logoutHandler = async () => {
+    try {
+      await axios.post("http://localhost:5000/api/users/logout");
+      setIsAuth(false);
+      console.log("Udało się wylogować");
     } catch (error) {
       if (error instanceof AxiosError) {
         console.log(error.message);
@@ -60,7 +73,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuth, authHandler }}>
+    <AuthContext.Provider value={{ isAuth, authHandler, logoutHandler }}>
       {children}
     </AuthContext.Provider>
   );
