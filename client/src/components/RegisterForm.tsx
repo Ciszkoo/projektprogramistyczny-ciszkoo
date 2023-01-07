@@ -8,8 +8,8 @@ interface RegisterFormProps {
 }
 
 const RegisterSchema = z.object({
-  name: z.string().min(2).max(50),
-  surname: z.string().min(2).max(50),
+  firstName: z.string().min(2).max(50),
+  lastName: z.string().min(2).max(50),
   email: z.string().email(),
   password: z.string().min(8).max(50),
   dateOfBirth: z.string(), // TODO: z.date()
@@ -47,15 +47,15 @@ const RegisterForm = (props: RegisterFormProps) => {
     >
       <button onClick={props.setIsRegister}>&lt;&lt; Powrót </button>
       <input
-        className={`input-sign ${errors.name && "invalid"}`}
+        className={`input-sign ${errors.firstName && "invalid"}`}
         placeholder="Imię"
-        {...register("name")}
+        {...register("firstName")}
         disabled={isSubmitting}
       />
       <input
-        className={`input-sign ${errors.surname && "invalid"}`}
+        className={`input-sign ${errors.lastName && "invalid"}`}
         placeholder="Nazwisko"
-        {...register("surname")}
+        {...register("lastName")}
         disabled={isSubmitting}
       />
       <input

@@ -11,8 +11,8 @@ export const createUserHandler = async (
   res: Response
 ) => {
   const userCandidate = new User(
-    req.body.name,
-    req.body.surname,
+    req.body.firstName,
+    req.body.lastName,
     req.body.email,
     req.body.password,
     req.body.dateOfBirth,

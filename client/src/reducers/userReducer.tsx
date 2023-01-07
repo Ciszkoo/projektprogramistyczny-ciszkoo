@@ -3,11 +3,12 @@ import axios from "axios";
 import { RootState } from "../store";
 
 interface UserData {
-  name: string;
-  surname: string;
+  firstName: string;
+  lastName: string;
   email: string;
   dateOfBirth: string;
   gender: string;
+  id: string;
 }
 
 export const fetchUserData = createAsyncThunk(

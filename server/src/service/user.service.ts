@@ -7,8 +7,8 @@ import driver from "../utils/neoDriver";
 interface UserNode {
   id: string;
   email: string;
-  name: string;
-  surname: string;
+  firstName: string;
+  lastName: string;
   password: string;
   dateOfBirth: string;
   gender: "male" | "female" | "other";
@@ -22,12 +22,11 @@ export const createUser = async (user: User) => {
 
   try {
     const result = await session.run(
-      "CREATE (u:User {id: $id, email: $email, name: $name, surname: $surname, password: $password, dateOfBirth: $dateOfBirth, gender: $gender}) RETURN u",
+      "CREATE (u:User {id: $id, email: $email, firstName: $firstName, lastName: $lastName, password: $password, dateOfBirth: $dateOfBirth, gender: $gender}) RETURN u",
       { ...userCandidate }
     );
     const node = result.records[0].get(0);
-    log.info(`User node, ${JSON.stringify(node)}`);
-    log.info(`User created, ${node.properties.name}`);
+    log.info(`User created, ${node.properties.firstName}`);
   } catch (e) {
     if (e instanceof Neo4jError) {
       log.error(e.message);
@@ -51,8 +50,8 @@ export const getUserBy = async (cond: "email" | "id", value: string) => {
     );
     const node: UserNode = result.records[0].get(0).properties;
     return new User(
-      node.name,
-      node.surname,
+      node.firstName,
+      node.lastName,
       node.email,
       node.password,
       node.dateOfBirth,

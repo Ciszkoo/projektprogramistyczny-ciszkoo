@@ -2,12 +2,12 @@ import { object, string, enum as zenum, TypeOf } from "zod";
 
 export const createUserSchema = object({
   body: object({
-    name: string({
+    firstName: string({
       required_error: "First name is required",
     })
       .min(2, "First name is too short - should be min 2 chars")
       .max(50, "First name is too long - should be max 50 chars"),
-    surname: string({
+    lastName: string({
       required_error: "Last name is required",
     })
       .min(2, "Last name is too short - should be min 2 chars")

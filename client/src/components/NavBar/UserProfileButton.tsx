@@ -8,7 +8,7 @@ const UserProfileButton = () => {
   const user = useAppSelector(selectUser);
 
   return (
-    <Link to={`/user/${user.data.email}`} replace>
+    <Link to={`/user/${user.data.id}`} replace>
       <div className="bg-violet-300 h-10 w-10 rounded-full flex items-center justify-center mr-2">
         <UserIcon className="h-6 w-6" />
       </div>

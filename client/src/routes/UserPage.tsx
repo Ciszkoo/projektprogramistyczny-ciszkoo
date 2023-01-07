@@ -13,9 +13,9 @@ const UserPage = () => {
       <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-2">
         <div className="bg-violet-100 w-36 h-36 rounded-full"></div>
         <p className="text-4xl font-bold text-center mt-20">
-          {user.data.name} {user.data.surname}
+          {user.data.firstName} {user.data.lastName}
         </p>
-        <Link to={`/user/${user.data.email}/edit`} replace>
+        <Link to={`/user/${user.data.id}/edit`} replace>
           <IdentificationIcon className="h-6 w-6 ml-2 mt-20" />
         </Link>
       </div>

@@ -12,9 +12,9 @@ const SearchFormSchema = z.object({
 type SearchFormSchemaType = z.infer<typeof SearchFormSchema>;
 
 type SearchResult = {
-  name: string;
-  surname: string;
-  email: string;
+  firstName: string;
+  lastName: string;
+  id: string;
 };
 
 const Search = () => {
@@ -83,7 +83,7 @@ const Search = () => {
           {searchResult.map((res, index) => {
             return (
               <li className="text-center p-2" key={index}>
-                {res.name} {res.surname}
+                {res.firstName} {res.lastName}
               </li>
             );
           })}

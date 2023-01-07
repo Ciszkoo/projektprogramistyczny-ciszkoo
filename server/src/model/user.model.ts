@@ -7,16 +7,16 @@ export const privateFields = ["password"];
 
 export class User {
   id?: string;
-  name: string;
-  surname: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   dateOfBirth: string;
   gender: "male" | "female" | "other";
 
   constructor(
-    name: string,
-    surname: string,
+    firstName: string,
+    lastName: string,
     email: string,
     password: string,
     dateOfBirth: string,
@@ -24,8 +24,8 @@ export class User {
     id?: string
   ) {
     // const { name, surname, email, password, dateOfBirth, gender } = input;
-    this.name = name;
-    this.surname = surname;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.email = email;
     this.password = password;
     this.dateOfBirth = dateOfBirth;
@@ -36,8 +36,8 @@ export class User {
   async hashPassword(): Promise<User> {
     const hashedPassword = await argo2.hash(this.password);
     return new User(
-      this.name,
-      this.surname,
+      this.firstName,
+      this.lastName,
       this.email,
       hashedPassword,
       this.dateOfBirth,

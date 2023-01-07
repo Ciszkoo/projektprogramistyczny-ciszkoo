@@ -8,14 +8,11 @@ export const searchController = async (
   res: Response
 ) => {
   const { query } = req.body;
-  // log.info(`Searching for ${query}`);
-  // log.info(`User ${res.locals.user}`,);
-  // log.info("User", res.locals.user === null);
 
   try {
     const result = await search(query.toLowerCase());
     const pickedRes = result.map((user) =>
-      pick(user, ["name", "surname", "email"])
+      pick(user, ["firstName", "lastName", "id"])
     );
     return res.send(pickedRes);
   } catch (error) {
