@@ -3,19 +3,19 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../reducers/hooks";
 import { selectUser } from "../reducers/userReducer";
 import UserDataField from "../components/UserEdit/UserDataField";
+import DeleteUserButton from "../components/UserEdit/DeleteUserButton";
 
 const UserInfoPage = () => {
   const user = useAppSelector(selectUser);
 
   return (
-    <div className="flex flex-col m-20">
+    <div className="flex flex-col m-16 gap-2">
       <div className="flex justify-between">
         <div className="text-4xl font-bold">Informacje:</div>
         <div className="h-10 w-24 flex items-center justify-center rounded-full bg-violet-200">
           <Link to={`/user/${user.data.id}`}>&lt;&lt; Wróć</Link>
         </div>
       </div>
-      {/* <EditForm /> */}
       <div className="flex flex-col text-lg mt-10">
         <UserDataField
           label="Imię"
@@ -43,6 +43,7 @@ const UserInfoPage = () => {
           propName="gender"
         />
       </div>
+      <DeleteUserButton />
     </div>
   );
 };
