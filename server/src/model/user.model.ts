@@ -6,6 +6,9 @@ import { v4 as uuid } from "uuid";
 export const privateFields = ["password"];
 
 export class User {
+  deleteUser() {
+    throw new Error("Method not implemented.");
+  }
   id?: string;
   firstName: string;
   lastName: string;

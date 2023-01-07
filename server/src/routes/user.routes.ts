@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 import {
   createUserHandler,
+  deleteUserHandler,
   editHandler,
   getCurrentUserHandler,
   loginHandler,
@@ -30,6 +31,8 @@ router.post(
 );
 
 router.get("/api/users/me", isAuth, getCurrentUserHandler);
+
+router.delete("/api/users/me", isAuth, deleteUserHandler);
 
 router.put(`/api/users/me/edit/:prop`, isAuth, editHandler);
 

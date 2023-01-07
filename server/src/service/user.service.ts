@@ -90,3 +90,20 @@ export const editData = async (prop: EditProp, value: string, id: string) => {
     await session.close();
   }
 };
+
+export const deleteUser = async (id: string) => {
+  const session = driver.session();
+
+  try {
+    await session.run("MATCH (u:User {id: $id}) DETACH DELETE u", { id });
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.message);
+      throw error;
+    }
+    log.error("Could not delete user");
+    throw new Error("Could not delete user");
+  } finally {
+    await session.close();
+  }
+};

@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
-import { createUser, editData, getUserBy } from "../service/user.service";
+import {
+  createUser,
+  deleteUser,
+  editData,
+  getUserBy,
+} from "../service/user.service";
 import { AlreadyExistsError } from "../utils/errors";
 import log from "../utils/logger";
 import { omit } from "lodash";
@@ -69,5 +74,14 @@ export const editHandler = async (req: Request, res: Response) => {
     return res.status(200).send({ message: "Name updated" });
   } catch (error) {
     return res.status(500).send({ message: "Could not update name" });
+  }
+};
+
+export const deleteUserHandler = async (req: Request, res: Response) => {
+  try {
+    await deleteUser(req.session.passport?.user as string);
+    return res.status(200).send({ message: "User deleted" });
+  } catch (error) {
+    return res.status(500).send({ message: "Could not delete user" });
   }
 };
