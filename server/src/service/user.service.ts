@@ -1,6 +1,7 @@
 import { Neo4jError } from "neo4j-driver";
 import { User } from "../model/user.model";
-import { AlreadyExistsError } from "../utils/errors";
+import { EditProp } from "../types/types";
+import { AlreadyExistsError, CustomError } from "../utils/errors";
 import log from "../utils/logger";
 import driver from "../utils/neoDriver";
 
@@ -58,9 +59,33 @@ export const getUserBy = async (cond: "email" | "id", value: string) => {
       node.gender,
       node.id
     );
-  } catch (e) {
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.message);
+      throw error;
+    }
     log.error("Could not get user");
-    throw new Error("Could not get user1");
+    throw new Error("Could not get user");
+  } finally {
+    await session.close();
+  }
+};
+
+export const editData = async (prop: EditProp, value: string, id: string) => {
+  const session = driver.session();
+
+  try {
+    await session.run(
+      `MERGE (u:User {id: $id}) SET u.${prop} = $value RETURN u`,
+      { value, id }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.message);
+      throw error;
+    }
+    log.error("Could not edit user");
+    throw new Error("Could not edit user");
   } finally {
     await session.close();
   }

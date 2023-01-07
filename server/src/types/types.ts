@@ -1,0 +1,1 @@
+export type EditProp = "firstName" | "lastName" | "email" | "password" | "dateOfBirth" | "gender";

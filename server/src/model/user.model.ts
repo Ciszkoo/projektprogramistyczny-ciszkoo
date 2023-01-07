@@ -46,15 +46,6 @@ export class User {
     );
   }
 
-  // static async build(input: CreateUserInput): Promise<UserHashed> {
-  //   const { password } = input;
-  //   const hashedPassword = await argo2.hash(password);
-  //   return new UserHashed({
-  //     ...input,
-  //     password: hashedPassword,
-  //   });
-  // }
-
   async validatePassword(password: string): Promise<boolean> {
     try {
       return await argo2.verify(this.password, password);
@@ -64,12 +55,3 @@ export class User {
     }
   }
 }
-
-// export class UserHashed extends User {
-//   id: string;
-
-//   constructor(input: CreateUserInput) {
-//     super(input);
-//     this.id = uuid();
-//   }
-// }

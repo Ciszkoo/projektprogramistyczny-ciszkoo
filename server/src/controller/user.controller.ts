@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
-import { createUser, getUserBy} from "../service/user.service";
+import { createUser, editData, getUserBy } from "../service/user.service";
 import { AlreadyExistsError } from "../utils/errors";
 import log from "../utils/logger";
 import { omit } from "lodash";
+import { EditProp } from "../types/types";
 
 export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
@@ -54,4 +55,19 @@ export const logoutHandler = (
 ) => {
   req.logout((err) => next(err));
   return res.status(200).send({ message: "Logged out" });
+};
+
+export const editHandler = async (req: Request, res: Response) => {
+  const { value } = req.body;
+  const prop = req.params.prop as EditProp;
+  try {
+    const user = await getUserBy("id", req.session.passport?.user as string);
+    if (user[prop] === value) {
+      return res.status(400).send({ message: "Same value" });
+    }
+    await editData(prop, value, req.session.passport?.user as string);
+    return res.status(200).send({ message: "Name updated" });
+  } catch (error) {
+    return res.status(500).send({ message: "Could not update name" });
+  }
 };

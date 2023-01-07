@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 import {
   createUserHandler,
+  editHandler,
   getCurrentUserHandler,
   loginHandler,
   logoutHandler,
@@ -29,5 +30,7 @@ router.post(
 );
 
 router.get("/api/users/me", isAuth, getCurrentUserHandler);
+
+router.put(`/api/users/me/edit/:prop`, isAuth, editHandler);
 
 export default router;

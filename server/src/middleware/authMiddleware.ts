@@ -4,6 +4,6 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(401).json({ message: "Not authorized" }).send();
+    res.status(401).send({ message: "Not authorized" });
   }
 };

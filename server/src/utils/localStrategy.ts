@@ -6,7 +6,6 @@ import log from "./logger";
 
 passport.serializeUser((user: Partial<User>, done) => {
   log.info("Serializing user...");
-  log.info(`Serializing: ${JSON.stringify(user)}`);
   done(null, user.id);
 });
 
