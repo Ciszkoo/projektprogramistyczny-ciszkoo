@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
-import { createUser, getUserByEmail } from "../service/user.service";
+import { createUser, getUserBy} from "../service/user.service";
 import { AlreadyExistsError } from "../utils/errors";
 import log from "../utils/logger";
 import { omit } from "lodash";
@@ -10,7 +10,14 @@ export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
   res: Response
 ) => {
-  const userCandidate = new User(req.body);
+  const userCandidate = new User(
+    req.body.name,
+    req.body.surname,
+    req.body.email,
+    req.body.password,
+    req.body.dateOfBirth,
+    req.body.gender
+  );
 
   try {
     await createUser(userCandidate);
@@ -29,7 +36,7 @@ export const createUserHandler = async (
 export const getCurrentUserHandler = async (req: Request, res: Response) => {
   log.info("Current user", req.session);
   try {
-    const user = await getUserByEmail(req.session.passport?.user as string);
+    const user = await getUserBy("id", req.session.passport?.user as string);
     return res.status(200).send(omit(user, ["password"]));
   } catch (error) {
     return res.status(500).send({ err: "Could not get user" });
