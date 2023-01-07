@@ -6,6 +6,7 @@ import EditModal from "./EditModal";
 interface UserDataFieldProps {
   label: string;
   value: string | undefined;
+  propName: "firstName" | "lastName" | "email" | "dateOfBirth" | "gender";
 }
 
 const UserDataField = (props: UserDataFieldProps) => {
@@ -25,7 +26,11 @@ const UserDataField = (props: UserDataFieldProps) => {
       </button>
       {showModal &&
         createPortal(
-          <EditModal closeModalHandler={closeModalHandler} />,
+          <EditModal
+            closeModalHandler={closeModalHandler}
+            label={props.label}
+            propName={props.propName}
+          />,
           document.body
         )}
     </div>

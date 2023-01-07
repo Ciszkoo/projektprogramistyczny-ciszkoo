@@ -17,11 +17,31 @@ const UserInfoPage = () => {
       </div>
       {/* <EditForm /> */}
       <div className="flex flex-col text-lg mt-10">
-        <UserDataField label="Imię" value={user.data.firstName} />
-        <UserDataField label="Nazwisko" value={user.data.lastName} />
-        <UserDataField label="E-mail" value={user.data.email} />
-        <UserDataField label="Data urodzenia" value={user.data.dateOfBirth} />
-        <UserDataField label="Płeć" value={user.data.gender} />
+        <UserDataField
+          label="Imię"
+          value={user.data.firstName}
+          propName="firstName"
+        />
+        <UserDataField
+          label="Nazwisko"
+          value={user.data.lastName}
+          propName="lastName"
+        />
+        <UserDataField
+          label="E-mail"
+          value={user.data.email}
+          propName="email"
+        />
+        <UserDataField
+          label="Data urodzenia"
+          value={user.data.dateOfBirth}
+          propName="dateOfBirth"
+        />
+        <UserDataField
+          label="Płeć"
+          value={user.data.gender}
+          propName="gender"
+        />
       </div>
     </div>
   );
