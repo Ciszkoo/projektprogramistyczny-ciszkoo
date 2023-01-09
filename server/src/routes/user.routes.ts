@@ -13,6 +13,9 @@ import { loginSchema } from "../schema/auth.schema";
 import { createUserSchema } from "../schema/user.schema";
 import { isAuth } from "../middleware/authMiddleware";
 
+import multer from "multer";
+const storage = multer({ dest: "uploads/" });
+
 const router = express.Router();
 
 router.post(
@@ -35,5 +38,7 @@ router.get("/api/users/me", isAuth, getCurrentUserHandler);
 router.delete("/api/users/me", isAuth, deleteUserHandler);
 
 router.put(`/api/users/me/edit/:prop`, isAuth, editHandler);
+
+router.post("/api/users/me/image", isAuth, storage.single("image"));
 
 export default router;
