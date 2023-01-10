@@ -1,8 +1,10 @@
-import { Outlet } from "react-router";
+import { Outlet, useLoaderData } from "react-router";
 import AuthProvider from "../context/AuthProvider";
 import NavBar from "./NavBar/NavBar";
 
 const AuthProviderLayout = () => {
+  const loaderData = useLoaderData();
+
   return (
     <AuthProvider>
       <NavBar />

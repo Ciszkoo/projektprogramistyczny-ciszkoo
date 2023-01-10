@@ -9,7 +9,7 @@ const NavBar = () => {
   const { isAuth } = useAuth();
 
   return (
-    <nav className="bg-violet-500 h-12 flex-initial flex items-center justify-between">
+    <nav className="z-50 bg-violet-500 h-12 flex-none flex items-center justify-between sticky top-0">
       {isAuth && (
         <div className="flex">
           <HomeButton />

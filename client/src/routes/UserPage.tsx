@@ -1,27 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import UserCard from "../components/UserPage/UserCard";
+import UserTimeline from "../components/UserPage/UserTimeline";
 import { useAppSelector } from "../reducers/hooks";
 import { selectUser } from "../reducers/userReducer";
-import { IdentificationIcon } from "@heroicons/react/24/outline";
-import { Link, Outlet } from "react-router-dom";
-import AddPhotoButton from "../components/UserPage/AddPhotoButton";
 
 const UserPage = () => {
+  const [main, setMain] = useState<boolean>(true);
+
   const user = useAppSelector(selectUser);
 
+  const location = useLocation();
+
+  const mainHandler = () => {
+    setMain(false);
+  };
+
+  useEffect(() => {
+    if (location.pathname === `/user/${user.data.id}`) {
+      setMain(true);
+    }
+  }, [location, user.data.id]);
+
   return (
-    <div className="w-[80%] flex flex-col h-full m-auto flex-initial py-2">
-      <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-2 gap-4">
-        <div className="bg-violet-100 w-36 h-36 rounded-full relative">
-          <AddPhotoButton />
-        </div>
-        <p className="text-4xl font-bold text-center mt-20">
-          {user.data.firstName} {user.data.lastName}
-        </p>
-        <Link to={`/user/${user.data.id}/edit`} replace>
-          <IdentificationIcon className="h-6 w-6 ml-2 mt-20" />
-        </Link>
-      </div>
-      <div className="rounded-xl bg-white">
+    <div className="w-[80%] flex flex-col h-full mx-auto flex-initial py-2">
+      <UserCard mainHandler={mainHandler} />
+      <div className="rounded-xl bg-white flex-initial">
+        {main && <UserTimeline />}
         <Outlet />
       </div>
     </div>

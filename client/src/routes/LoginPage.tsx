@@ -28,6 +28,7 @@ const LoginPage = () => {
         <RegisterForm setIsRegister={handleCloseSignUp} />
       )}
       {!isAuthWrap && !isRegister && <LoginForm setIsRegister={handleSignUp} />}
+      {isAuthWrap && <p>Udało się zalogować</p>}
     </>
   );
 };

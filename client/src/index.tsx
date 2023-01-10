@@ -13,23 +13,35 @@ import axios from "axios";
 import UserInfoPage from "./routes/UserInfoPage";
 
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:5000";
 
 const router = createBrowserRouter([
   {
     element: <AuthProviderLayout />,
+    // loader: async (): Promise<boolean> => {
+    //   try {
+    //     const res = await axios.get("/sessioncheck");
+    //     if (res.status === 200) {
+    //       return true;
+    //     }
+    //     return false;
+    //   } catch {
+    //     return false;
+    //   }
+    // },
     children: [
       {
         path: "/",
         element: <LoginPage />,
       },
-      {
-        path: "/dashboard",
-        element: (
-          <ProtectedRoute>
-            <p>Dashboard</p>
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "/dashboard",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <p>Dashboard</p>
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "/user/:id",
         element: (

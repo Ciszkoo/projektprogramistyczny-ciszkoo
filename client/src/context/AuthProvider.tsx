@@ -7,9 +7,8 @@ import {
   useEffect,
 } from "react";
 
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../reducers/hooks";
-import { fetchUserData, selectUser } from "../reducers/userReducer";
+import { useAppDispatch } from "../reducers/hooks";
+import { fetchUserData } from "../reducers/userReducer";
 
 interface IAuthContext {
   isAuth: boolean;
@@ -31,19 +30,14 @@ const AuthContext = createContext<IAuthContext>({
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-  const navigate = useNavigate();
-
   const [isAuth, setIsAuth] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
-
-  const user = useAppSelector(selectUser);
 
   useEffect(() => {
     const eff = async () => {
       if (isAuth) {
         await dispatch(fetchUserData());
-        navigate(`/dashboard`);
       }
     };
     eff();
@@ -52,7 +46,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const authHandler = async (data: IFormInput) => {
     try {
-      await axios.post("http://localhost:5000/api/users/login", data);
+      await axios.post("/api/users/login", data);
       console.log("Udało się zalogować");
       setIsAuth(true);
     } catch (error) {
@@ -66,7 +60,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const logoutHandler = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users/logout");
+      await axios.post("/api/users/logout");
       setIsAuth(false);
       console.log("Udało się wylogować");
     } catch (error) {

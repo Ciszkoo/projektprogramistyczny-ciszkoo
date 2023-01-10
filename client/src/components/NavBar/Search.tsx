@@ -26,7 +26,7 @@ const Search = () => {
 
   const onSubmit = async (data: SearchFormSchemaType) => {
     try {
-      const res = await axios.post(`http://localhost:5000/api/search`, data);
+      const res = await axios.post(`/api/search`, data);
       setSearchResult(res.data);
     } catch (error) {
       if (error instanceof AxiosError) {
