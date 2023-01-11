@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAppDispatch } from "../../reducers/hooks";
+import { fetchUserData } from "../../reducers/userReducer";
 import uploadcareClient from "../../utils/uploadcareClient";
 
 type Input = {
@@ -11,6 +13,8 @@ const AddPhotoForm = () => {
   const { register, handleSubmit, reset, watch } = useForm<Input>();
   const [img, setImg] = useState<ArrayBuffer>();
   const image = watch("image");
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const setting = async () => {
@@ -44,6 +48,7 @@ const AddPhotoForm = () => {
     console.log(upload);
     const res = await axios.put("/api/users/me/avatar", { avatarID: upload });
     if (res.status !== 200) return;
+    await dispatch(fetchUserData());
     console.log("Uploaded!");
   };
 
