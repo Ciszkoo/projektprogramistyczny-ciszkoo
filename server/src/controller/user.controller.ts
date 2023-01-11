@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
 import {
+  createPost,
   createUser,
   deleteUser,
   editData,
@@ -12,6 +13,7 @@ import { AlreadyExistsError } from "../utils/errors";
 import log from "../utils/logger";
 import { omit } from "lodash";
 import { EditProp } from "../types/types";
+import { CreatePostInput } from "../schema/post.schema";
 
 export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
@@ -100,4 +102,22 @@ export const avatarUpdateHandler = async (req: Request, res: Response) => {
   }
 
   return res.status(200).send({ message: "Avatar updated" });
+};
+
+export const createPostHandler = async (
+  req: Request<{}, {}, CreatePostInput>,
+  res: Response
+) => {
+  const { content } = req.body;
+  const id = req.session.passport?.user as string;
+
+  const querry = await createPost(id, content).catch((err) => {
+    log.error(err);
+  });
+
+  if (!querry) {
+    return res.status(500).send({ message: "Could not create post" });
+  }
+
+  return res.status(200).send({ message: "Post created" });
 };

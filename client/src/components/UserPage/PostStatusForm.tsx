@@ -1,10 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { useAppSelector } from "../../reducers/hooks";
-import { selectUser } from "../../reducers/userReducer";
 
 const PostStatusSchema = z.object({
   status: z.string().min(1).max(500),
@@ -13,19 +11,21 @@ const PostStatusSchema = z.object({
 type PostStatusSchemaType = z.infer<typeof PostStatusSchema>;
 
 const PostStatusForm = () => {
-  const user = useAppSelector(selectUser);
-
   const { register, handleSubmit, reset } = useForm<PostStatusSchemaType>({
     resolver: zodResolver(PostStatusSchema),
   });
 
-  const onSubmit: SubmitHandler<PostStatusSchemaType> = (data) => {
-    const statusData = {
-      id: user.data.id,
-      date: new Date(),
-      status: data.status,
-    };
-    console.log(statusData);
+  const onSubmit: SubmitHandler<PostStatusSchemaType> = async (data) => {
+    const response = await axios.post("/api/users/me/status", {
+      content: data.status,
+    });
+    if (response.status !== 200) {
+      console.log("Couldn't post status");
+      reset();
+      return;
+    }
+
+    console.log("Status posted!");
     reset();
   };
 

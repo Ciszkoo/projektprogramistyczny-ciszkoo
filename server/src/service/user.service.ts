@@ -113,3 +113,19 @@ export const updateAvatar = async (id: string, avatarID: string) => {
   }
   return true;
 };
+
+export const createPost = async (id: string, content: string) => {
+  const session = driver.session();
+  const timestamp = Date.now();
+  const querryResult = await session
+    .run(
+      "MATCH (u:User {id: $id}) CREATE (u)-[:POSTED {at: $timestamp}]->(p:Post {content: $content}) RETURN p",
+      { id, timestamp, content }
+    )
+    .catch((err) => log.error(err))
+    .finally(() => session.close());
+  if (!querryResult) {
+    return false;
+  }
+  return true;
+};
