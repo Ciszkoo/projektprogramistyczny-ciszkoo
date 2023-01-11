@@ -9,6 +9,7 @@ interface UserData {
   dateOfBirth: string;
   gender: string;
   id: string;
+  avatar: string;
 }
 
 export const fetchUserData = createAsyncThunk(

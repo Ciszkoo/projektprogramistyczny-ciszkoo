@@ -16,6 +16,7 @@ export class User {
   password: string;
   dateOfBirth: string;
   gender: "male" | "female" | "other";
+  avatar: string;
 
   constructor(
     firstName: string,
@@ -24,6 +25,7 @@ export class User {
     password: string,
     dateOfBirth: string,
     gender: "male" | "female" | "other",
+    avatar: string,
     id?: string
   ) {
     // const { name, surname, email, password, dateOfBirth, gender } = input;
@@ -33,6 +35,7 @@ export class User {
     this.password = password;
     this.dateOfBirth = dateOfBirth;
     this.gender = gender;
+    this.avatar = avatar;
     if (id) this.id = id;
   }
 
@@ -45,6 +48,7 @@ export class User {
       hashedPassword,
       this.dateOfBirth,
       this.gender,
+      this.avatar,
       uuid()
     );
   }

@@ -13,9 +13,9 @@ interface UserNode {
   password: string;
   dateOfBirth: string;
   gender: "male" | "female" | "other";
+  avatar: string;
 }
 
-// TODO: Add constraints to database
 export const createUser = async (user: User) => {
   const session = driver.session();
   const userCandidate = await user.hashPassword();
@@ -23,7 +23,7 @@ export const createUser = async (user: User) => {
 
   try {
     const result = await session.run(
-      "CREATE (u:User {id: $id, email: $email, firstName: $firstName, lastName: $lastName, password: $password, dateOfBirth: $dateOfBirth, gender: $gender}) RETURN u",
+      "CREATE (u:User {id: $id, email: $email, firstName: $firstName, lastName: $lastName, password: $password, dateOfBirth: $dateOfBirth, gender: $gender, avatar: $avatar}) RETURN u",
       { ...userCandidate }
     );
     const node = result.records[0].get(0);
@@ -41,34 +41,24 @@ export const createUser = async (user: User) => {
 
 export const getUserBy = async (cond: "email" | "id", value: string) => {
   const session = driver.session();
-
-  try {
-    const result = await session.run(
-      `MATCH (u:User {${cond}: $value}) RETURN u`,
-      {
-        value,
-      }
-    );
-    const node: UserNode = result.records[0].get(0).properties;
-    return new User(
-      node.firstName,
-      node.lastName,
-      node.email,
-      node.password,
-      node.dateOfBirth,
-      node.gender,
-      node.id
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      log.error(error.message);
-      throw error;
-    }
-    log.error("Could not get user");
+  const querryResult = await session
+    .run(`MATCH (u:User {${cond}: $value}) RETURN u`, { value })
+    .catch((err) => log.error(err))
+    .finally(() => session.close());
+  if (!querryResult) {
     throw new Error("Could not get user");
-  } finally {
-    await session.close();
   }
+  const node: UserNode = querryResult.records[0].get(0).properties;
+  return new User(
+    node.firstName,
+    node.lastName,
+    node.email,
+    node.password,
+    node.dateOfBirth,
+    node.gender,
+    node.avatar,
+    node.id
+  );
 };
 
 export const editData = async (prop: EditProp, value: string, id: string) => {
@@ -106,4 +96,20 @@ export const deleteUser = async (id: string) => {
   } finally {
     await session.close();
   }
+};
+
+export const updateAvatar = async (id: string, avatarID: string) => {
+  const session = driver.session();
+  const url = `https://ucarecdn.com/${avatarID}/`;
+  const querryResult = await session
+    .run("MERGE (u:User {id: $id}) SET u.avatar = $url RETURN u", {
+      id,
+      url,
+    })
+    .catch((err) => log.error(err))
+    .finally(() => session.close());
+  if (!querryResult) {
+    throw new CustomError("Could not update avatar");
+  }
+  return true;
 };

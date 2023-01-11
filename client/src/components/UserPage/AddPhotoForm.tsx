@@ -1,18 +1,30 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import uploadcareClient from "../../utils/uploadcareClient";
 
 type Input = {
   image: FileList;
 };
 
 const AddPhotoForm = () => {
-  const { register, handleSubmit, reset } = useForm<Input>();
+  const { register, handleSubmit, reset, watch } = useForm<Input>();
   const [img, setImg] = useState<ArrayBuffer>();
+  const image = watch("image");
+
+  useEffect(() => {
+    const setting = async () => {
+      setImg(await image[0].arrayBuffer());
+    };
+    if (image === undefined) {
+      setImg(undefined);
+      return;
+    }
+    setting();
+  }, [image]);
 
   const onSubmit = async (input: Input) => {
     const image = input.image[0];
-    setImg(await image.arrayBuffer());
     console.log(input.image[0]);
     if (
       image.type !== "image/png" &&
@@ -23,19 +35,16 @@ const AddPhotoForm = () => {
       reset();
       return;
     }
-    const formData = new FormData();
-    formData.append("image", image);
-    try {
-      await axios.post("http://localhost:5000/api/users/me/image", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    } catch (error) {
-      error instanceof Error && error.message
-        ? console.log(error.message)
-        : console.log(error);
-    }
+    const upload = await uploadcareClient
+      .uploadFile(image)
+      .then((file) => file.uuid)
+      .catch((err) => console.log(err));
+
+    if (!upload) return;
+    console.log(upload);
+    const res = await axios.put("/api/users/me/avatar", { avatarID: upload });
+    if (res.status !== 200) return;
+    console.log("Uploaded!");
   };
 
   return (

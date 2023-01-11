@@ -6,6 +6,7 @@ import {
   deleteUser,
   editData,
   getUserBy,
+  updateAvatar,
 } from "../service/user.service";
 import { AlreadyExistsError } from "../utils/errors";
 import log from "../utils/logger";
@@ -22,7 +23,8 @@ export const createUserHandler = async (
     req.body.email,
     req.body.password,
     req.body.dateOfBirth,
-    req.body.gender
+    req.body.gender,
+    "https://ucarecdn.com/254642d1-e4a5-41f3-a1cc-586077d6a1d3/"
   );
 
   try {
@@ -40,13 +42,13 @@ export const createUserHandler = async (
 };
 
 export const getCurrentUserHandler = async (req: Request, res: Response) => {
-  log.info("Current user", req.session);
-  try {
-    const user = await getUserBy("id", req.session.passport?.user as string);
-    return res.status(200).send(omit(user, ["password"]));
-  } catch (error) {
-    return res.status(500).send({ err: "Could not get user" });
+  const user = await getUserBy("id", req.session.passport?.user as string);
+
+  if (!user) {
+    return res.status(401).send({ err: "Not logged in" });
   }
+
+  return res.status(200).send(omit(user, ["password"]));
 };
 
 export const loginHandler = (_: Request, res: Response) => {
@@ -84,4 +86,18 @@ export const deleteUserHandler = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(500).send({ message: "Could not delete user" });
   }
+};
+
+export const avatarUpdateHandler = async (req: Request, res: Response) => {
+  const id = req.session.passport?.user as string;
+  const { avatarID } = req.body;
+  const querry = await updateAvatar(id, avatarID).catch((err) => {
+    log.error(err);
+  });
+
+  if (!querry) {
+    return res.status(500).send({ message: "Could not update avatar" });
+  }
+
+  return res.status(200).send({ message: "Avatar updated" });
 };

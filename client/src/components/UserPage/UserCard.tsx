@@ -15,6 +15,11 @@ const UserCard = (props: UserCardProps) => {
   return (
     <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-2 gap-4">
       <div className="bg-violet-100 w-36 h-36 rounded-full relative">
+        <img
+          src={`${user.data.avatar}/-/scale_crop/144x144/`}
+          alt="avatar"
+          className="bg-violet-100 w-36 h-36 rounded-full relative"
+        />
         <AddPhotoButton />
       </div>
       <p className="text-4xl font-bold text-center mt-20">

@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
 import {
+  avatarUpdateHandler,
   createUserHandler,
   deleteUserHandler,
   editHandler,
@@ -12,9 +13,6 @@ import validateResource from "../middleware/validateResource";
 import { loginSchema } from "../schema/auth.schema";
 import { createUserSchema } from "../schema/user.schema";
 import { isAuth } from "../middleware/authMiddleware";
-
-import multer from "multer";
-const storage = multer({ dest: "uploads/" });
 
 const router = express.Router();
 
@@ -39,6 +37,6 @@ router.delete("/api/users/me", isAuth, deleteUserHandler);
 
 router.put(`/api/users/me/edit/:prop`, isAuth, editHandler);
 
-router.post("/api/users/me/image", isAuth, storage.single("image"));
+router.put("/api/users/me/avatar", isAuth, avatarUpdateHandler);
 
 export default router;
