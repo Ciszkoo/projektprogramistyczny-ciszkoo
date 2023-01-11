@@ -119,7 +119,7 @@ export const createPost = async (id: string, content: string) => {
   const timestamp = Date.now();
   const querryResult = await session
     .run(
-      "MATCH (u:User {id: $id}) CREATE (u)-[:POSTED {at: $timestamp}]->(p:Post {content: $content}) RETURN p",
+      "MATCH (u:User {id: $id}) CREATE (u)-[:POSTED {at: $timestamp}]->(p:Post {id: apoc.create.uuid(), content: $content}) RETURN p",
       { id, timestamp, content }
     )
     .catch((err) => log.error(err))
