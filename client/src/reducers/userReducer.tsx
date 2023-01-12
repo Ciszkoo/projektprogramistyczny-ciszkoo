@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
+import { fetchUserPosts } from "./userPostsReducer";
 
 interface UserData {
   firstName: string;
@@ -12,28 +13,26 @@ interface UserData {
   avatar: string;
 }
 
+type UserDataResponse = UserData;
+
 export const fetchUserData = createAsyncThunk(
   "user/fetchData",
   async (_, thunkApi) => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/users/me");
-      const data: UserData = await res.data;
-      console.log(data);
-      return await JSON.parse(JSON.stringify(data));
-    } catch {
-      thunkApi.rejectWithValue("Błąd autoryzacji");
-    }
+    const res = await axios
+      .get<UserDataResponse>("http://localhost:5000/api/users/me")
+      .then((res) => res.data)
+      .catch((err) => thunkApi.rejectWithValue(err));
+    await thunkApi.dispatch(fetchUserPosts(0));
+    return res;
   }
 );
 
 interface UserState {
   data: Partial<UserData>;
-  status: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: UserState = {
   data: {},
-  status: "idle",
 };
 
 export const userSlice = createSlice({
@@ -41,17 +40,9 @@ export const userSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchUserData.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchUserData.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.data = action.payload;
-      })
-      .addCase(fetchUserData.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(fetchUserData.fulfilled, (state, action) => {
+      state.data = action.payload;
+    });
   },
 });
 

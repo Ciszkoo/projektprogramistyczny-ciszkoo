@@ -7,6 +7,7 @@ import {
   deleteUser,
   editData,
   getUserBy,
+  getUsersPosts,
   updateAvatar,
 } from "../service/user.service";
 import { AlreadyExistsError } from "../utils/errors";
@@ -120,4 +121,19 @@ export const createPostHandler = async (
   }
 
   return res.status(200).send({ message: "Post created" });
+};
+
+export const getUsersPostsHandler = async (req: Request, res: Response) => {
+  const page = parseInt(req.params.page, 10);
+  const id = req.session.passport?.user as string;
+
+  const querry = await getUsersPosts(id, page).catch((err) => {
+    log.error(err);
+  });
+
+  if (!querry) {
+    return res.status(500).send({ message: "Could not get posts" });
+  }
+
+  return res.status(200).send({ posts: querry });
 };

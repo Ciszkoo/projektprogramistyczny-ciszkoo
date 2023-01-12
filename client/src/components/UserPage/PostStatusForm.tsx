@@ -3,6 +3,8 @@ import axios from "axios";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useAppDispatch } from "../../reducers/hooks";
+import { fetchUserPosts } from "../../reducers/userPostsReducer";
 
 const PostStatusSchema = z.object({
   status: z.string().min(1).max(500),
@@ -15,6 +17,8 @@ const PostStatusForm = () => {
     resolver: zodResolver(PostStatusSchema),
   });
 
+  const dispatch = useAppDispatch();
+
   const onSubmit: SubmitHandler<PostStatusSchemaType> = async (data) => {
     const response = await axios.post("/api/users/me/status", {
       content: data.status,
@@ -26,6 +30,7 @@ const PostStatusForm = () => {
     }
 
     console.log("Status posted!");
+    dispatch(fetchUserPosts(0))
     reset();
   };
 

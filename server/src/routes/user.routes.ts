@@ -7,6 +7,7 @@ import {
   deleteUserHandler,
   editHandler,
   getCurrentUserHandler,
+  getUsersPostsHandler,
   loginHandler,
   logoutHandler,
 } from "../controller/user.controller";
@@ -47,5 +48,7 @@ router.post(
   validateResource(createPostSchema),
   createPostHandler
 );
+
+router.get("/api/users/me/status/:page", isAuth, getUsersPostsHandler);
 
 export default router;

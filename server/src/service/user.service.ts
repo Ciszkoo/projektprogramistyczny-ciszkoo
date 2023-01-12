@@ -119,7 +119,7 @@ export const createPost = async (id: string, content: string) => {
   const timestamp = Date.now();
   const querryResult = await session
     .run(
-      "MATCH (u:User {id: $id}) CREATE (u)-[:POSTED {at: $timestamp}]->(p:Post {id: apoc.create.uuid(), content: $content}) RETURN p",
+      "MATCH (u:User {id: $id}) CREATE (u)-[:POSTED]->(p:Post {id: apoc.create.uuid(), content: $content, at: $timestamp}) RETURN p",
       { id, timestamp, content }
     )
     .catch((err) => log.error(err))
@@ -128,4 +128,23 @@ export const createPost = async (id: string, content: string) => {
     return false;
   }
   return true;
+};
+
+export const getUsersPosts = async (id: string, limit: number) => {
+  const session = driver.session();
+  const skip = (limit * 10).toFixed(0);
+  const computedLimit = (limit * 10 + 10).toFixed(0);
+  const querryResult = await session.run(
+    "MATCH (u:User {id: $id})-[:POSTED]->(p:Post) RETURN u, p ORDER BY p.at DESC SKIP toInteger($skip) LIMIT toInteger($computedLimit)",
+    { id, skip, computedLimit }
+  );
+  if (!querryResult) {
+    return;
+  }
+  const posts = querryResult.records.map((record) => {
+    const user = record.get(0).properties;
+    const post = record.get(1).properties;
+    return { userId: user.id, firstName: user.firstName, lastName: user.lastName, ...post };
+  });
+  return posts;
 };
