@@ -5,7 +5,7 @@ export const searchSchema = object({
     query: string({
       required_error: "Content is required",
     })
-      .min(1, "Content is too short - should be min 2 chars")
+      .min(1, "Content is too short - should be min 1 chars")
       .max(50, "Content is too long - should be max 50 chars"),
   }),
 });

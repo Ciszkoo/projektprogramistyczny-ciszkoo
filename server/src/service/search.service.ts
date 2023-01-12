@@ -1,35 +1,37 @@
-import { User } from "../model/user.model";
 import log from "../utils/logger";
 import driver from "../utils/neoDriver";
 
-export const search = async (query: string) => {
+interface SearchOutput {
+  id: string;
+  avatar: string;
+  firstName: string;
+  lastName: string;
+}
+
+export const search = async (id: string, query: string) => {
   const session = driver.session();
   const exp = `(?i).*${query}.*`;
 
-  try {
-    const result = await session.run(
-      "MATCH (u:User) WHERE u.firstName =~ $exp OR u.lastName =~ $exp RETURN u LIMIT 2",
-      {
-        exp,
-      }
-    );
-    const nodes = result.records.map((record) => record.get(0));
+  const results = await session.run(
+    "MATCH (u:User) WHERE (u.firstName =~ $exp OR u.lastName =~ $exp) AND NOT u.id = $id RETURN u.id, u.avatar, u.firstName, u.lastName LIMIT 5",
+    { exp, id }
+  );
 
-    return nodes.map(
-      (node) =>
-        new User(
-          node.properties.firstName,
-          node.properties.lastName,
-          node.properties.email,
-          node.properties.password,
-          node.properties.dateOfBirth,
-          node.properties.gender,
-          node.properties.id
-        )
-    );
-  } catch (e) {
-    throw new Error("Could not get user");
-  } finally {
-    await session.close();
+  session.close();
+
+  if (!results || results.records.length === 0) {
+    log.error("Could not find users");
+    return null;
   }
+
+  const mapped = results.records.map<SearchOutput>((record) => {
+    return {
+      id: record.get("u.id"),
+      avatar: record.get("u.avatar"),
+      firstName: record.get("u.firstName"),
+      lastName: record.get("u.lastName"),
+    };
+  });
+
+  return mapped;
 };

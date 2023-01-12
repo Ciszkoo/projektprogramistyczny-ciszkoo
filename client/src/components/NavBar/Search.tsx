@@ -12,9 +12,10 @@ const SearchFormSchema = z.object({
 type SearchFormSchemaType = z.infer<typeof SearchFormSchema>;
 
 type SearchResult = {
+  id: string;
+  avatar: string;
   firstName: string;
   lastName: string;
-  id: string;
 };
 
 const Search = () => {
@@ -22,18 +23,17 @@ const Search = () => {
     resolver: zodResolver(SearchFormSchema),
   });
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [searchResult, setSearchResult] = useState<Array<SearchResult>>([]);
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
 
-  const onSubmit = async (data: SearchFormSchemaType) => {
+  const onSubmit = async (s: SearchFormSchemaType) => {
+    if (s.query.length === 0) return setSearchResult([]);
+
     try {
-      const res = await axios.post(`/api/search`, data);
-      setSearchResult(res.data);
+      const { data } = await axios.post("/api/search", s);
+      setSearchResult(data);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        setSearchResult([]);
-        return;
-      }
-      console.log(error);
+      console.error(error);
+      setSearchResult([]);
     }
   };
 
@@ -58,7 +58,7 @@ const Search = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <div
           className={`bg-violet-300 ml-2 h-10 w-80 flex items-center justify-center ${
             searchResult.length === 0 || !isFocused
@@ -82,8 +82,11 @@ const Search = () => {
         <ul className="fixed top-11 bg-violet-300 ml-14 w-80 rounded-b-lg">
           {searchResult.map((res, index) => {
             return (
-              <li className="text-center p-2" key={index}>
-                {res.firstName} {res.lastName}
+              <li className="flex items-center p-2 gap-4" key={res.id}>
+                <img className="rounded-full" src={`${res.avatar}/-/scale_crop/40x40/`} />
+                <p>
+                  {res.firstName} {res.lastName}
+                </p>
               </li>
             );
           })}
