@@ -4,6 +4,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import axios, { AxiosError } from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../reducers/hooks";
+import { fetchTempUserData } from "../../reducers/userReducer";
 
 const SearchFormSchema = z.object({
   query: z.string().max(50),
@@ -36,9 +39,24 @@ const Search = () => {
       setSearchResult([]);
     }
   };
+  const dispatch = useAppDispatch();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const search = watch("query");
+
+  const navigate = useNavigate();
+
+  const searchResultClickHandler = (id: string) => async () => {
+    await dispatch(fetchTempUserData(id));
+    navigate(`/user/${id}`);
+    return;
+  }
+
+  const blurHandler = () => {
+    setTimeout(() => {
+      setIsFocused(false);
+    }, 200);
+  }
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null;
@@ -74,7 +92,7 @@ const Search = () => {
             autoComplete="off"
             {...register("query")}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onBlur={blurHandler}
           />
         </div>
       </form>
@@ -82,12 +100,17 @@ const Search = () => {
         <ul className="fixed top-11 bg-violet-300 ml-14 w-80 rounded-b-lg">
           {searchResult.map((res, index) => {
             return (
-              <li className="flex items-center p-2 gap-4" key={res.id}>
-                <img className="rounded-full" src={`${res.avatar}/-/scale_crop/40x40/`} />
-                <p>
-                  {res.firstName} {res.lastName}
-                </p>
-              </li>
+              <Link to={`/user/${res.id}`} key={res.id} onClick={searchResultClickHandler(res.id)}>
+                <li className="flex items-center p-2 gap-4">
+                  <img
+                    className="rounded-full"
+                    src={`${res.avatar}/-/scale_crop/40x40/`}
+                  />
+                  <p>
+                    {res.firstName} {res.lastName}
+                  </p>
+                </li>
+              </Link>
             );
           })}
         </ul>

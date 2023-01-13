@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import { useAppDispatch } from "../reducers/hooks";
-import { fetchUserData } from "../reducers/userReducer";
+import { fetchCurrUserData } from "../reducers/userReducer";
 
 interface IAuthContext {
   isAuth: boolean;
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const eff = async () => {
       if (isAuth) {
-        await dispatch(fetchUserData());
+        await dispatch(fetchCurrUserData());
       }
     };
     eff();
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const authHandler = async (data: IFormInput) => {
     try {
-      await axios.post("/api/users/login", data);
+      await axios.post("/api/user/login", data);
       console.log("Udało się zalogować");
       setIsAuth(true);
     } catch (error) {
@@ -60,7 +60,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const logoutHandler = async () => {
     try {
-      await axios.post("/api/users/logout");
+      await axios.post("/api/user/logout");
       setIsAuth(false);
       console.log("Udało się wylogować");
     } catch (error) {

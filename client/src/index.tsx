@@ -8,9 +8,10 @@ import "./index.css";
 import LoginPage from "./routes/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { store } from "./store";
-import UserPage from "./routes/UserPage";
 import axios from "axios";
 import UserInfoPage from "./routes/UserInfoPage";
+import UserRoute from "./routes/UserRoute";
+import UserTimeline from "./components/UserPage/UserTimeline";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:5000";
@@ -18,38 +19,23 @@ axios.defaults.baseURL = "http://localhost:5000";
 const router = createBrowserRouter([
   {
     element: <AuthProviderLayout />,
-    // loader: async (): Promise<boolean> => {
-    //   try {
-    //     const res = await axios.get("/sessioncheck");
-    //     if (res.status === 200) {
-    //       return true;
-    //     }
-    //     return false;
-    //   } catch {
-    //     return false;
-    //   }
-    // },
     children: [
       {
         path: "/",
         element: <LoginPage />,
       },
-      // {
-      //   path: "/dashboard",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <p>Dashboard</p>
-      //     </ProtectedRoute>
-      //   ),
-      // },
       {
         path: "/user/:id",
         element: (
           <ProtectedRoute>
-            <UserPage />
+            <UserRoute />
           </ProtectedRoute>
         ),
         children: [
+          {
+            path: "",
+            element: <UserTimeline />,
+          },
           {
             path: "edit",
             element: <UserInfoPage />,

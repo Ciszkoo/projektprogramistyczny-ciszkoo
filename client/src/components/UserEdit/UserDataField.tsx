@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
 import EditModal from "./EditModal";
+import { useAppSelector } from "../../reducers/hooks";
+import { selectIsCurrentUser } from "../../reducers/userReducer";
 
 interface UserDataFieldProps {
   label: string;
@@ -11,6 +13,8 @@ interface UserDataFieldProps {
 
 const UserDataField = (props: UserDataFieldProps) => {
   const [showModal, setShowModal] = useState(false);
+
+  const isCurr = useAppSelector(selectIsCurrentUser);
 
   const openModalHandler = () => {
     setShowModal(true);
@@ -34,9 +38,11 @@ const UserDataField = (props: UserDataFieldProps) => {
       <p>
         {props.label}: {props.value}
       </p>
-      <button onClick={openModalHandler}>
-        <PencilSquareIcon className="w-6 h-6" />
-      </button>
+      {isCurr && (
+        <button onClick={openModalHandler}>
+          <PencilSquareIcon className="w-6 h-6" />
+        </button>
+      )}
       {showModal && portal}
     </div>
   );

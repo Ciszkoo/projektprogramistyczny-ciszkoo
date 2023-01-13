@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "../../reducers/hooks";
-import { fetchUserData } from "../../reducers/userReducer";
+import { fetchCurrUserData } from "../../reducers/userReducer";
 import uploadcareClient from "../../utils/uploadcareClient";
 
 type Input = {
@@ -46,9 +46,9 @@ const AddPhotoForm = () => {
 
     if (!upload) return;
     console.log(upload);
-    const res = await axios.put("/api/users/me/avatar", { avatarID: upload });
+    const res = await axios.put("/api/user/me/avatar", { avatarID: upload });
     if (res.status !== 200) return;
-    await dispatch(fetchUserData());
+    await dispatch(fetchCurrUserData());
     console.log("Uploaded!");
   };
 

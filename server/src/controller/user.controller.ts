@@ -45,10 +45,28 @@ export const createUserHandler = async (
 };
 
 export const getCurrentUserHandler = async (req: Request, res: Response) => {
-  const user = await getUserBy("id", req.session.passport?.user as string);
+  const id = req.session.passport?.user as string;
+
+  log.info("Getting current user");
+
+  const user = await getUserBy("id", id);
 
   if (!user) {
-    return res.status(401).send({ err: "Not logged in" });
+    return res.status(401).send({ message: "Couldn't find user" });
+  }
+
+  return res.status(200).send(omit(user, ["password"]));
+};
+
+export const getUserHandler = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  log.info("Getting current user");
+
+  const user = await getUserBy("id", id);
+
+  if (!user) {
+    return res.status(401).send({ message: "Couldn't find user" });
   }
 
   return res.status(200).send(omit(user, ["password"]));
@@ -123,9 +141,24 @@ export const createPostHandler = async (
   return res.status(200).send({ message: "Post created" });
 };
 
-export const getUsersPostsHandler = async (req: Request, res: Response) => {
+export const getCurrUsersPostsHandler = async (req: Request, res: Response) => {
   const page = parseInt(req.params.page, 10);
   const id = req.session.passport?.user as string;
+
+  const querry = await getUsersPosts(id, page).catch((err) => {
+    log.error(err);
+  });
+
+  if (!querry) {
+    return res.status(500).send({ message: "Could not get posts" });
+  }
+
+  return res.status(200).send({ posts: querry });
+};
+
+export const getUsersPostsHandler = async (req: Request, res: Response) => {
+  const page = parseInt(req.params.page, 10);
+  const id = req.params.id;
 
   const querry = await getUsersPosts(id, page).catch((err) => {
     log.error(err);

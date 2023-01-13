@@ -4,7 +4,7 @@ import { selectUser } from "../reducers/userReducer";
 const Temp = () => {
   const user = useAppSelector(selectUser);
 
-  return <div>{JSON.stringify(user.data)}</div>;
+  return <div>{JSON.stringify(user.current)}</div>;
 };
 
 export default Temp;

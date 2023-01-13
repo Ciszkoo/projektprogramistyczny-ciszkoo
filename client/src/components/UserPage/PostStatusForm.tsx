@@ -4,7 +4,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppDispatch } from "../../reducers/hooks";
-import { fetchUserPosts } from "../../reducers/userPostsReducer";
+import { fetchCurrUserPosts } from "../../reducers/userPostsReducer";
 
 const PostStatusSchema = z.object({
   status: z.string().min(1).max(500),
@@ -20,7 +20,7 @@ const PostStatusForm = () => {
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<PostStatusSchemaType> = async (data) => {
-    const response = await axios.post("/api/users/me/status", {
+    const response = await axios.post("/api/user/me/status", {
       content: data.status,
     });
     if (response.status !== 200) {
@@ -30,7 +30,7 @@ const PostStatusForm = () => {
     }
 
     console.log("Status posted!");
-    dispatch(fetchUserPosts(0))
+    dispatch(fetchCurrUserPosts(0));
     reset();
   };
 

@@ -8,7 +8,7 @@ const DeleteUserButton = () => {
   const deleteUserHandler = async () => {
     try {
       logoutHandler();
-      await axios.delete("http://localhost:5000/api/users/me");
+      await axios.delete("/api/user/me");
       console.log("Deleted");
     } catch (error) {
       error instanceof Error && error.message

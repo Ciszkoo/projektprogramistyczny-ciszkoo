@@ -7,9 +7,11 @@ import {
   deleteUserHandler,
   editHandler,
   getCurrentUserHandler,
-  getUsersPostsHandler,
+  getUserHandler,
+  getCurrUsersPostsHandler,
   loginHandler,
   logoutHandler,
+  getUsersPostsHandler,
 } from "../controller/user.controller";
 import validateResource from "../middleware/validateResource";
 import { loginSchema } from "../schema/auth.schema";
@@ -20,35 +22,39 @@ import { createPostSchema } from "../schema/post.schema";
 const router = express.Router();
 
 router.post(
-  "/api/users/login",
+  "/api/user/login",
   validateResource(loginSchema),
   passport.authenticate("local"),
   loginHandler
 );
 
-router.post("/api/users/logout", isAuth, logoutHandler);
+router.post("/api/user/logout", isAuth, logoutHandler);
 
 router.post(
-  "/api/users/create",
+  "/api/user/create",
   validateResource(createUserSchema),
   createUserHandler
 );
 
-router.get("/api/users/me", isAuth, getCurrentUserHandler);
+router.post("/api/user/:id", isAuth, getUserHandler);
 
-router.delete("/api/users/me", isAuth, deleteUserHandler);
+router.get("/api/user/me", isAuth, getCurrentUserHandler);
 
-router.put(`/api/users/me/edit/:prop`, isAuth, editHandler);
+router.delete("/api/user/me", isAuth, deleteUserHandler);
 
-router.put("/api/users/me/avatar", isAuth, avatarUpdateHandler);
+router.put(`/api/user/me/edit/:prop`, isAuth, editHandler);
+
+router.put("/api/user/me/avatar", isAuth, avatarUpdateHandler);
 
 router.post(
-  "/api/users/me/status",
+  "/api/user/me/status",
   isAuth,
   validateResource(createPostSchema),
   createPostHandler
 );
 
-router.get("/api/users/me/status/:page", isAuth, getUsersPostsHandler);
+router.get("/api/user/me/status/:page", isAuth, getCurrUsersPostsHandler);
+
+router.get("/api/user/:id/status/:page", isAuth, getUsersPostsHandler);
 
 export default router;
