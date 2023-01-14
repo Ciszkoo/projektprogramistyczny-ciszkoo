@@ -1,5 +1,5 @@
 import React from "react";
-import { IdentificationIcon } from "@heroicons/react/24/outline";
+import { IdentificationIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../reducers/hooks";
 import {
@@ -13,7 +13,7 @@ const UserCard = () => {
   const isCurrent = useAppSelector(selectIsCurrentUser);
 
   return (
-    <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-2 gap-4">
+    <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-5 gap-4 shadow-lg">
       <div className="bg-violet-100 w-36 h-36 rounded-full relative">
         <img
           src={`${user.avatar}/-/scale_crop/144x144/`}
@@ -27,6 +27,9 @@ const UserCard = () => {
       </p>
       <Link to={`/user/${user.id}/edit`}>
         <IdentificationIcon className="h-6 w-6 ml-2 mt-20" />
+      </Link>
+      <Link to={`/user/${user.id}/friends`}>
+        <UsersIcon className="h-6 w-6 ml-2 mt-20" />
       </Link>
     </div>
   );

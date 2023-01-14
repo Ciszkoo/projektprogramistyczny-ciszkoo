@@ -17,13 +17,7 @@ const UserRoute = () => {
     condition ? dispatch(setCurr()) : dispatch(setOther());
   }, [condition, dispatch]);
 
-  return (
-    <>
-      <div className="w-[80%] flex flex-col h-full mx-auto flex-initial py-2">
-        <UserPage />
-      </div>
-    </>
-  );
+  return <UserPage />;
 };
 
 export default UserRoute;

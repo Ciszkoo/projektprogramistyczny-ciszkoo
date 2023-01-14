@@ -1,9 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAppSelector } from "../../reducers/hooks";
 import { selectUserPosts } from "../../reducers/userPostsReducer";
+import Post from "../Post/Post";
 
-type Status = {
+export type Status = {
   userId: string;
   firstName: string;
   lastName: string;
@@ -19,16 +19,9 @@ const StatusList = () => {
   const posts = useAppSelector(selectUserPosts);
 
   return (
-    <ul>
+    <ul className="w-[80%]">
       {posts.map((s) => {
-        return (
-          <li key={s.id}>
-            <p>
-              {s.firstName} {s.lastName} {s.at}
-            </p>
-            <p>{s.content}</p>
-          </li>
-        );
+        return <Post key={s.id} post={s} />;
       })}
     </ul>
   );

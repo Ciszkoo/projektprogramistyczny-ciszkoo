@@ -1,25 +1,36 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useAppSelector } from "../reducers/hooks";
 import {
   selectIsCurrentUser,
   selectVisibleUser,
 } from "../reducers/userReducer";
 import UserDataField from "../components/UserEdit/UserDataField";
-import DeleteUserButton from "../components/UserEdit/DeleteUserButton";
+import SubPageHeader from "../components/SubPage/SubPageHeader";
+import { useAuth } from "../context/AuthProvider";
+import axios from "axios";
+import Button from "../components/Button/Button";
 
 const UserInfoPage = () => {
   const user = useAppSelector(selectVisibleUser);
   const isCurr = useAppSelector(selectIsCurrentUser);
 
+  const { logoutHandler } = useAuth();
+
+  const handleDeleteUser = async () => {
+    try {
+      logoutHandler();
+      await axios.delete("/api/user/me");
+      console.log("Deleted");
+    } catch (error) {
+      error instanceof Error && error.message
+        ? console.log(error.message)
+        : console.log(error);
+    }
+  };
+
   return (
-    <div className="flex flex-col m-16 gap-2">
-      <div className="flex justify-between">
-        <div className="text-4xl font-bold">Informacje:</div>
-        <div className="h-10 w-24 flex items-center justify-center rounded-full bg-violet-200">
-          <Link to={`/user/${user.id}`}>&lt;&lt; Wróć</Link>
-        </div>
-      </div>
+    <div className="flex flex-col gap-2 bg-white w-[80%] rounded-xl shadow-lg p-5">
+      <SubPageHeader title="Informacje:" />
       <div className="flex flex-col text-lg mt-10">
         <UserDataField
           label="Imię"
@@ -39,7 +50,14 @@ const UserInfoPage = () => {
         />
         <UserDataField label="Płeć" value={user.gender} propName="gender" />
       </div>
-      {isCurr && <DeleteUserButton />}
+      {isCurr && (
+        <Button
+          filling="Usuń konto"
+          lightness="200"
+          handleOnClick={handleDeleteUser}
+          customClass="w-fit self-center"
+        />
+      )}
     </div>
   );
 };

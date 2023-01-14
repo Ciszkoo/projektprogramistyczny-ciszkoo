@@ -12,6 +12,7 @@ import axios from "axios";
 import UserInfoPage from "./routes/UserInfoPage";
 import UserRoute from "./routes/UserRoute";
 import UserTimeline from "./components/UserPage/UserTimeline";
+import FriendsRoute from "./routes/FriendsRoute";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:5000";
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
           {
             path: "edit",
             element: <UserInfoPage />,
+          },
+          {
+            path: "friends",
+            element: <FriendsRoute />,
           },
         ],
       },

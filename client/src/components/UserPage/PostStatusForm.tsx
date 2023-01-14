@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppDispatch } from "../../reducers/hooks";
 import { fetchCurrUserPosts } from "../../reducers/userPostsReducer";
+import Button from "../Button/Button";
 
 const PostStatusSchema = z.object({
   status: z.string().min(1).max(500),
@@ -48,12 +49,12 @@ const PostStatusForm = () => {
           className="flex-auto resize-none p-2 border-2 border-solid border-violet-100 rounded-xl"
           {...register("status")}
         />
-        <button
+        <Button
+          filling="Opublikuj"
+          lightness="200"
           type="submit"
-          className="flex self-end w-fit p-2 bg-violet-200 rounded-full"
-        >
-          Opublikuj
-        </button>
+          customClass="self-end"
+        />
       </form>
     </>
   );
