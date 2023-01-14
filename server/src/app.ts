@@ -36,7 +36,7 @@ app.use((req, _, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(router);
+app.use("/api", router);
 
 app.listen(port, () => log.info(`Server running on http://localhost:${port}`));
 

@@ -22,39 +22,39 @@ import { createPostSchema } from "../schema/post.schema";
 const router = express.Router();
 
 router.post(
-  "/api/user/login",
+  "/login",
   validateResource(loginSchema),
   passport.authenticate("local"),
   loginHandler
 );
 
-router.post("/api/user/logout", isAuth, logoutHandler);
+router.post("/logout", isAuth, logoutHandler);
 
 router.post(
-  "/api/user/create",
+  "/create",
   validateResource(createUserSchema),
   createUserHandler
 );
 
-router.post("/api/user/:id", isAuth, getUserHandler);
+router.post("/:id", isAuth, getUserHandler);
 
-router.get("/api/user/me", isAuth, getCurrentUserHandler);
+router.get("/me", isAuth, getCurrentUserHandler);
 
-router.delete("/api/user/me", isAuth, deleteUserHandler);
+router.delete("/me", isAuth, deleteUserHandler);
 
-router.put(`/api/user/me/edit/:prop`, isAuth, editHandler);
+router.put(`/me/edit/:prop`, isAuth, editHandler);
 
-router.put("/api/user/me/avatar", isAuth, avatarUpdateHandler);
+router.put("/me/avatar", isAuth, avatarUpdateHandler);
 
 router.post(
-  "/api/user/me/status",
+  "/me/status",
   isAuth,
   validateResource(createPostSchema),
   createPostHandler
 );
 
-router.get("/api/user/me/status/:page", isAuth, getCurrUsersPostsHandler);
+router.get("/me/status/:page", isAuth, getCurrUsersPostsHandler);
 
-router.get("/api/user/:id/status/:page", isAuth, getUsersPostsHandler);
+router.get("/:id/status/:page", isAuth, getUsersPostsHandler);
 
 export default router;
