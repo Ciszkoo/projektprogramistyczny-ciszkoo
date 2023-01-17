@@ -1,81 +1,47 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "../model/user.model";
 import { CreateUserInput } from "../schema/user.schema";
 import {
-  createPost,
   createUser,
   deleteUser,
   editData,
+  getFriendshipStatus,
   getUserBy,
-  getUsersPosts,
-  updateAvatar,
 } from "../service/user.service";
-import { AlreadyExistsError } from "../utils/errors";
-import log from "../utils/logger";
 import { omit } from "lodash";
-import { EditProp } from "../types/types";
-import { CreatePostInput } from "../schema/post.schema";
+import { EditProp, UserToCreate } from "../types/types";
 
+// Tworzenie użytkownika
 export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
   res: Response
 ) => {
-  const userCandidate = new User(
-    req.body.firstName,
-    req.body.lastName,
-    req.body.email,
-    req.body.password,
-    req.body.dateOfBirth,
-    req.body.gender,
-    "https://ucarecdn.com/254642d1-e4a5-41f3-a1cc-586077d6a1d3/"
-  );
-
-  try {
-    await createUser(userCandidate);
-
-    return res.status(201).send({ message: "User created" });
-  } catch (error) {
-    if (error instanceof AlreadyExistsError) {
-      log.error(error.message);
-      return res.status(409).send({ err: error.message });
-    }
-    log.error("Could not create user");
-    return res.status(500).send({ err: "Could not create user" });
+  const userCandidate: UserToCreate = {
+    ...req.body,
+    avatar: "https://ucarecdn.com/254642d1-e4a5-41f3-a1cc-586077d6a1d3/",
+  };
+  const result = await createUser(userCandidate);
+  if (!result) {
+    return res.status(409).send({ message: "User already exists" });
   }
+  return res.status(201).send({ message: "User created" });
 };
 
-export const getCurrentUserHandler = async (req: Request, res: Response) => {
+// Pobieranie danych o aktualnie zalogowanym użytkowniku
+export const getMyselfHandler = async (req: Request, res: Response) => {
   const id = req.session.passport?.user as string;
-
-  log.info("Getting current user");
-
   const user = await getUserBy("id", id);
-
   if (!user) {
     return res.status(401).send({ message: "Couldn't find user" });
   }
-
   return res.status(200).send(omit(user, ["password"]));
 };
 
-export const getUserHandler = async (req: Request, res: Response) => {
-  const id = req.params.id;
-
-  log.info("Getting current user");
-
-  const user = await getUserBy("id", id);
-
-  if (!user) {
-    return res.status(401).send({ message: "Couldn't find user" });
-  }
-
-  return res.status(200).send(omit(user, ["password"]));
-};
-
+// Logowanie użytkownika
 export const loginHandler = (_: Request, res: Response) => {
   return res.status(200).send({ message: "Logged in" });
 };
 
+// Wylogowanie użytkownika
 export const logoutHandler = (
   req: Request,
   res: Response,
@@ -85,88 +51,58 @@ export const logoutHandler = (
   return res.status(200).send({ message: "Logged out" });
 };
 
-export const editHandler = async (req: Request, res: Response) => {
-  const { value } = req.body;
-  const prop = req.params.prop as EditProp;
-  try {
-    const user = await getUserBy("id", req.session.passport?.user as string);
-    if (user[prop] === value) {
-      return res.status(400).send({ message: "Same value" });
-    }
-    await editData(prop, value, req.session.passport?.user as string);
-    return res.status(200).send({ message: "Name updated" });
-  } catch (error) {
-    return res.status(500).send({ message: "Could not update name" });
-  }
-};
-
-export const deleteUserHandler = async (req: Request, res: Response) => {
-  try {
-    await deleteUser(req.session.passport?.user as string);
-    return res.status(200).send({ message: "User deleted" });
-  } catch (error) {
-    return res.status(500).send({ message: "Could not delete user" });
-  }
-};
-
-export const avatarUpdateHandler = async (req: Request, res: Response) => {
-  const id = req.session.passport?.user as string;
-  const { avatarID } = req.body;
-  const querry = await updateAvatar(id, avatarID).catch((err) => {
-    log.error(err);
-  });
-
-  if (!querry) {
-    return res.status(500).send({ message: "Could not update avatar" });
-  }
-
-  return res.status(200).send({ message: "Avatar updated" });
-};
-
-export const createPostHandler = async (
-  req: Request<{}, {}, CreatePostInput>,
+// Edycja danych użytkownika
+export const editHandler = async (
+  req: Request<{ prop: EditProp }>,
   res: Response
 ) => {
-  const { content } = req.body;
-  const id = req.session.passport?.user as string;
-
-  const querry = await createPost(id, content).catch((err) => {
-    log.error(err);
-  });
-
-  if (!querry) {
-    return res.status(500).send({ message: "Could not create post" });
+  const { value } = req.body;
+  const prop = req.params.prop;
+  const user = await getUserBy("id", req.session.passport?.user as string);
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
   }
-
-  return res.status(200).send({ message: "Post created" });
+  if (
+    user[prop].replace("https://ucarecdn.com/", "").replace("/", "") === value
+  ) {
+    return res.status(400).send({ message: "Same value" });
+  }
+  const valModified =
+    prop === "avatar" ? `https://ucarecdn.com/${value}/` : value;
+  const result = await editData(
+    prop,
+    valModified,
+    req.session.passport?.user as string
+  );
+  if (!result) {
+    return res.status(500).send({ message: "Could not update data" });
+  }
+  return res.status(200).send({ message: "Name updated" });
 };
 
-export const getCurrUsersPostsHandler = async (req: Request, res: Response) => {
-  const page = parseInt(req.params.page, 10);
+// Usuwanie użytkownika
+export const deleteUserHandler = async (req: Request, res: Response) => {
   const id = req.session.passport?.user as string;
-
-  const querry = await getUsersPosts(id, page).catch((err) => {
-    log.error(err);
-  });
-
-  if (!querry) {
-    return res.status(500).send({ message: "Could not get posts" });
+  const result = await deleteUser(id);
+  if (!result) {
+    return res.status(500).send({ message: "Could not delete user" });
   }
-
-  return res.status(200).send({ posts: querry });
+  return res.status(200).send({ message: "User deleted" });
 };
 
-export const getUsersPostsHandler = async (req: Request, res: Response) => {
-  const page = parseInt(req.params.page, 10);
+// Pobieranie danych o innym użytkowniku
+export const getUserHandler = async (req: Request, res: Response) => {
+  const myId = req.session.passport?.user as string;
   const id = req.params.id;
-
-  const querry = await getUsersPosts(id, page).catch((err) => {
-    log.error(err);
-  });
-
-  if (!querry) {
-    return res.status(500).send({ message: "Could not get posts" });
+  const user = await getUserBy("id", id);
+  if (!user) {
+    return res.status(401).send({ message: "Couldn't find user" });
   }
-
-  return res.status(200).send({ posts: querry });
+  const relation = await getFriendshipStatus(id, myId);
+  if (!relation) {
+    return res.status(500).send({ message: "Couldn't get user info" });
+  }
+  return res
+    .status(200)
+    .send({ ...omit(user, ["password"]), friendship: relation });
 };

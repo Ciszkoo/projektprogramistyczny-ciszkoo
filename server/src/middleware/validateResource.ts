@@ -12,7 +12,11 @@ const validateResource =
       });
       next();
     } catch (e: any) {
-      res.status(400).send(e.errors);
+      res.status(400).send(
+        e.errors.map((err: any) => {
+          return { message: err.message };
+        })
+      );
     }
   };
 

@@ -1,10 +1,11 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
-import { User } from "../model/user.model";
+import { validatePassword } from "../model/user.model";
 import { getUserBy } from "../service/user.service";
+import { UserNode } from "../types/types";
 import log from "./logger";
 
-passport.serializeUser((user: Partial<User>, done) => {
+passport.serializeUser((user: Partial<UserNode>, done) => {
   log.info("Serializing user...");
   done(null, user.id);
 });
@@ -34,7 +35,11 @@ passport.use(
           return done(null, false);
         }
         const user = await getUserBy("email", email);
-        const isValid = await user.validatePassword(password);
+        if (!user) {
+          log.info("User not found");
+          return done(null, false);
+        }
+        const isValid = await validatePassword(password, user.password);
         if (!isValid) {
           log.info("Invalid password");
           done(null, false);

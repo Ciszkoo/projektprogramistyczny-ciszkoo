@@ -1,17 +1,13 @@
 import express from "express";
 import passport from "passport";
 import {
-  avatarUpdateHandler,
-  createPostHandler,
   createUserHandler,
   deleteUserHandler,
   editHandler,
-  getCurrentUserHandler,
   getUserHandler,
-  getCurrUsersPostsHandler,
   loginHandler,
   logoutHandler,
-  getUsersPostsHandler,
+  getMyselfHandler,
 } from "../controller/user.controller";
 import validateResource from "../middleware/validateResource";
 import { loginSchema } from "../schema/auth.schema";
@@ -21,6 +17,10 @@ import { createPostSchema } from "../schema/post.schema";
 
 const router = express.Router();
 
+// Tworzenie użytkownika
+router.post("/create", validateResource(createUserSchema), createUserHandler);
+
+// Logowanie użytkownika
 router.post(
   "/login",
   validateResource(loginSchema),
@@ -28,33 +28,19 @@ router.post(
   loginHandler
 );
 
+// Wylogowanie użytkownika
 router.post("/logout", isAuth, logoutHandler);
 
-router.post(
-  "/create",
-  validateResource(createUserSchema),
-  createUserHandler
-);
-
-router.post("/:id", isAuth, getUserHandler);
-
-router.get("/me", isAuth, getCurrentUserHandler);
-
+// Usuwanie użytkownika
 router.delete("/me", isAuth, deleteUserHandler);
 
+// Pobieranie danych o aktualnie zalogowanym użytkowniku
+router.get("/me", isAuth, getMyselfHandler);
+
+// Pobieranie danych o innym użytkowniku
+router.get("/:id", isAuth, getUserHandler);
+
+// Edycja danych o aktualnie zalogowanym użytkowniku
 router.put(`/me/edit/:prop`, isAuth, editHandler);
-
-router.put("/me/avatar", isAuth, avatarUpdateHandler);
-
-router.post(
-  "/me/status",
-  isAuth,
-  validateResource(createPostSchema),
-  createPostHandler
-);
-
-router.get("/me/status/:page", isAuth, getCurrUsersPostsHandler);
-
-router.get("/:id/status/:page", isAuth, getUsersPostsHandler);
 
 export default router;

@@ -1,66 +1,46 @@
-import { Neo4jError } from "neo4j-driver";
-import { User } from "../model/user.model";
-import { EditProp } from "../types/types";
-import { AlreadyExistsError, CustomError } from "../utils/errors";
+import { hashPassword } from "../model/user.model";
+import { EditProp, UserNode, UserToCreate } from "../types/types";
 import log from "../utils/logger";
 import driver from "../utils/neoDriver";
 
-interface UserNode {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  dateOfBirth: string;
-  gender: "male" | "female" | "other";
-  avatar: string;
-}
-
-export const createUser = async (user: User) => {
+// Tworzenie użytkownika
+export const createUser = async (user: UserToCreate) => {
   const session = driver.session();
-  const userCandidate = await user.hashPassword();
-  log.info(`User candidate, ${JSON.stringify(userCandidate)}`);
-
+  const userCandidate: UserToCreate = {
+    ...user,
+    password: await hashPassword(user.password),
+  };
   try {
     const result = await session.run(
-      "CREATE (u:User {id: $id, email: $email, firstName: $firstName, lastName: $lastName, password: $password, dateOfBirth: $dateOfBirth, gender: $gender, avatar: $avatar}) RETURN u",
+      "CREATE (u:User {id: apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, password: $password, dateOfBirth: $dateOfBirth, gender: $gender, avatar: $avatar}) RETURN u.email",
       { ...userCandidate }
     );
-    const node = result.records[0].get(0);
-    log.info(`User created, ${node.properties.firstName}`);
-  } catch (e) {
-    if (e instanceof Neo4jError) {
-      log.error(e.message);
-      throw new AlreadyExistsError("User already exists");
-    }
-    throw new Error("Could not create user");
+    const userEmail = result.records[0].get("u.email");
+    log.info(`User created, ${userEmail}`);
+    return true;
+  } catch (error) {
+    return false;
   } finally {
     await session.close();
   }
 };
 
+// Pobieranie danych o użytkowniku
 export const getUserBy = async (cond: "email" | "id", value: string) => {
   const session = driver.session();
-  const querryResult = await session
-    .run(`MATCH (u:User {${cond}: $value}) RETURN u`, { value })
-    .catch((err) => log.error(err))
-    .finally(() => session.close());
-  if (!querryResult) {
-    throw new Error("Could not get user");
+  try {
+    const querryResult = await session.run(
+      `MATCH (u:User {${cond}: $value}) RETURN u`,
+      { value }
+    );
+    const user: UserNode = querryResult.records[0].get("u").properties;
+    return user;
+  } catch {
+    return null;
   }
-  const node: UserNode = querryResult.records[0].get(0).properties;
-  return new User(
-    node.firstName,
-    node.lastName,
-    node.email,
-    node.password,
-    node.dateOfBirth,
-    node.gender,
-    node.avatar,
-    node.id
-  );
 };
 
+// Edycja danych użytkownika
 export const editData = async (prop: EditProp, value: string, id: string) => {
   const session = driver.session();
 
@@ -69,82 +49,53 @@ export const editData = async (prop: EditProp, value: string, id: string) => {
       `MERGE (u:User {id: $id}) SET u.${prop} = $value RETURN u`,
       { value, id }
     );
+    return true;
   } catch (error) {
-    if (error instanceof Error) {
-      log.error(error.message);
-      throw error;
-    }
-    log.error("Could not edit user");
-    throw new Error("Could not edit user");
+    return false;
   } finally {
     await session.close();
   }
 };
 
+// Usuwanie użytkownika
 export const deleteUser = async (id: string) => {
   const session = driver.session();
-
   try {
     await session.run("MATCH (u:User {id: $id}) DETACH DELETE u", { id });
+    return true;
   } catch (error) {
-    if (error instanceof Error) {
-      log.error(error.message);
-      throw error;
-    }
     log.error("Could not delete user");
-    throw new Error("Could not delete user");
+    return false;
   } finally {
     await session.close();
   }
 };
 
-export const updateAvatar = async (id: string, avatarID: string) => {
+// Zapytanie do bazy o status relacji między użytkownikami
+export const getFriendshipStatus = async (myId: string, id: string) => {
   const session = driver.session();
-  const url = `https://ucarecdn.com/${avatarID}/`;
-  const querryResult = await session
-    .run("MERGE (u:User {id: $id}) SET u.avatar = $url RETURN u", {
-      id,
-      url,
-    })
-    .catch((err) => log.error(err))
-    .finally(() => session.close());
-  if (!querryResult) {
-    throw new CustomError("Could not update avatar");
+  try {
+    const q1 = await session.run(
+      "MATCH (:User {id: $id})<-[relation]-(:User {id: $myId}) RETURN relation",
+      { id, myId }
+    );
+    const q2 = await session.run(
+      "MATCH (:User {id: $id})-[relation]->(:User {id: $myId}) RETURN relation",
+      { id, myId }
+    );
+    if (q1.records.length && q2.records.length) {
+      return "friends";
+    }
+    if (q1.records.length) {
+      return "invitation";
+    }
+    if (q2.records.length) {
+      return "invited";
+    }
+    return "none";
+  } catch (error) {
+    return null;
+  } finally {
+    await session.close();
   }
-  return true;
-};
-
-export const createPost = async (id: string, content: string) => {
-  const session = driver.session();
-  const timestamp = Date.now();
-  const querryResult = await session
-    .run(
-      "MATCH (u:User {id: $id}) CREATE (u)-[:POSTED]->(p:Post {id: apoc.create.uuid(), content: $content, at: $timestamp}) RETURN p",
-      { id, timestamp, content }
-    )
-    .catch((err) => log.error(err))
-    .finally(() => session.close());
-  if (!querryResult) {
-    return false;
-  }
-  return true;
-};
-
-export const getUsersPosts = async (id: string, limit: number) => {
-  const session = driver.session();
-  const skip = (limit * 10).toFixed(0);
-  const computedLimit = (limit * 10 + 10).toFixed(0);
-  const querryResult = await session.run(
-    "MATCH (u:User {id: $id})-[:POSTED]->(p:Post) RETURN u, p ORDER BY p.at DESC SKIP toInteger($skip) LIMIT toInteger($computedLimit)",
-    { id, skip, computedLimit }
-  );
-  if (!querryResult) {
-    return;
-  }
-  const posts = querryResult.records.map((record) => {
-    const user = record.get(0).properties;
-    const post = record.get(1).properties;
-    return { userId: user.id, firstName: user.firstName, lastName: user.lastName, ...post };
-  });
-  return posts;
 };

@@ -1,11 +1,82 @@
 import { Router } from "express";
-import { inviteHandler } from "../controller/friends.controller";
+import {
+  acceptHandler,
+  cancelHandler,
+  declineHandler,
+  getFriendsHandler,
+  getInvitationsHandler,
+  getProposalsHandler,
+  inviteHandler,
+  removeHandler,
+} from "../controller/friends.controller";
 import { isAuth } from "../middleware/authMiddleware";
 import validateResource from "../middleware/validateResource";
 import { blankSchema } from "../schema/blank.schema";
 
 const router = Router();
 
-router.post("/invite/:id", isAuth, validateResource(blankSchema), inviteHandler);
+// Wysyłanie zaproszenia do znajomych
+router.post(
+  "/invite/:id",
+  isAuth,
+  validateResource(blankSchema),
+  inviteHandler
+);
+
+// Akceptowanie zaproszenia do znajomych
+router.post(
+  "/accept/:id",
+  isAuth,
+  validateResource(blankSchema),
+  acceptHandler
+);
+
+// Odrzucenie zaproszenia do znajomych
+router.post(
+  "/decline/:id",
+  isAuth,
+  validateResource(blankSchema),
+  declineHandler
+);
+
+// Anulowanie zaproszenia do znajomych
+router.post(
+  "/cancel/:id",
+  isAuth,
+  validateResource(blankSchema),
+  cancelHandler
+);
+
+// Usuwanie znajomego
+router.delete(
+  "/remove/:id",
+  isAuth,
+  validateResource(blankSchema),
+  removeHandler
+);
+
+// Pobieranie zaproszeń
+router.get(
+  "/invitations",
+  isAuth,
+  validateResource(blankSchema),
+  getInvitationsHandler
+);
+
+// Pobieranie znajomych
+router.get(
+  "/friends",
+  isAuth,
+  validateResource(blankSchema),
+  getFriendsHandler
+);
+
+// Pobieranie propozycji znajomych
+router.get(
+  "/proposals",
+  isAuth,
+  validateResource(blankSchema),
+  getProposalsHandler
+);
 
 export default router;
