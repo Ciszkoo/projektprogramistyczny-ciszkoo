@@ -21,14 +21,6 @@ axios.defaults.baseURL = "http://localhost:5000";
 const router = createBrowserRouter([
   {
     element: <AuthProviderLayout />,
-    // loader: async () => {
-    //   console.log("Checking session");
-    //   return await axios
-    //     .get("/api/sessioncheck")
-    //     .then((_) => true)
-    //     .catch((_) => false);
-    // },
-    // id: "auth",
     children: [
       {
         path: "/",

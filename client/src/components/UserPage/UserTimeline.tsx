@@ -1,11 +1,11 @@
 import React from "react";
 import { useAppSelector } from "../../reducers/hooks";
-import { selectIsCurrentUser } from "../../reducers/userReducer";
+import { selectIsMe } from "../../reducers/userReducer";
 import PostStatusForm from "./PostStatusForm";
 import StatusList from "./StatusList";
 
 const UserTimeline = () => {
-  const isCurr = useAppSelector(selectIsCurrentUser);
+  const isCurr = useAppSelector(selectIsMe);
 
   return (
     <>

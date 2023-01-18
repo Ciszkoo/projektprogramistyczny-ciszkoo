@@ -1,23 +1,14 @@
 import React from "react";
-import {
-  IdentificationIcon,
-  UsersIcon,
-  UserPlusIcon,
-} from "@heroicons/react/24/outline";
+import { IdentificationIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../reducers/hooks";
-import {
-  selectIsCurrentUser,
-  selectVisibleUser,
-} from "../../reducers/userReducer";
+import { selectIsMe, selectUser } from "../../reducers/userReducer";
 import AddPhotoButton from "./AddPhotoButton";
 import InvitationButton from "./InvitationButton";
 
 const UserCard = () => {
-  const user = useAppSelector(selectVisibleUser);
-  const isCurrent = useAppSelector(selectIsCurrentUser);
-
- 
+  const user = useAppSelector(selectUser);
+  const isCurrent = useAppSelector(selectIsMe);
 
   return (
     <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-5 gap-4 shadow-lg">

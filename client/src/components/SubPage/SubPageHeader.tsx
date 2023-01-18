@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { useAppSelector } from "../../reducers/hooks";
-import { selectVisibleUser } from "../../reducers/userReducer";
+import { selectUser } from "../../reducers/userReducer";
 import Button from "../Button/Button";
 
 interface SubPageHeaderProps {
@@ -9,7 +9,7 @@ interface SubPageHeaderProps {
 }
 
 const SubPageHeader = (props: SubPageHeaderProps) => {
-  const user = useAppSelector(selectVisibleUser);
+  const user = useAppSelector(selectUser);
 
   const navigate = useNavigate();
 

@@ -1,9 +1,6 @@
 import React from "react";
 import { useAppSelector } from "../reducers/hooks";
-import {
-  selectIsCurrentUser,
-  selectVisibleUser,
-} from "../reducers/userReducer";
+import { selectIsMe, selectUser } from "../reducers/userReducer";
 import UserDataField from "../components/UserEdit/UserDataField";
 import SubPageHeader from "../components/SubPage/SubPageHeader";
 import { useAuth } from "../context/AuthProvider";
@@ -11,8 +8,8 @@ import axios from "axios";
 import Button from "../components/Button/Button";
 
 const UserInfoPage = () => {
-  const user = useAppSelector(selectVisibleUser);
-  const isCurr = useAppSelector(selectIsCurrentUser);
+  const user = useAppSelector(selectUser);
+  const isCurr = useAppSelector(selectIsMe);
 
   const { handleLogout } = useAuth();
 

@@ -1,20 +1,20 @@
 import React, { useLayoutEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import UserPage from "../components/UserPage/UserPage";
 import { useAppDispatch, useAppSelector } from "../reducers/hooks";
-import { selectCurrUser, setCurr, setOther } from "../reducers/userReducer";
+import { selectMe, setMe, setOtherUser } from "../reducers/userReducer";
 
 const UserRoute = () => {
-  const user = useAppSelector(selectCurrUser);
+  const user = useAppSelector(selectMe);
 
-  const location = useLocation();
+  const { id } = useParams();
 
   const dispatch = useAppDispatch();
 
-  const condition = location.pathname.includes(user.id as string);
+  const condition = id === user.id;
 
   useLayoutEffect(() => {
-    condition ? dispatch(setCurr()) : dispatch(setOther());
+    condition ? dispatch(setMe()) : dispatch(setOtherUser());
   }, [condition, dispatch]);
 
   return <UserPage />;

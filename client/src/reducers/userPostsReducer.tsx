@@ -69,7 +69,7 @@ export const userPostsSlice = createSlice({
 });
 
 export const selectUserPosts = (state: RootState) =>
-  state.user.picked
+  state.user.isMe
     ? state.userPosts.currentUserPosts
     : state.userPosts.userPosts;
 

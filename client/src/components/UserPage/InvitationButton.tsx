@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import Button from "../Button/Button";
-import { UserPlusIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "../../reducers/hooks";
-import {
-  selectIsCurrentUser,
-  selectVisibleUser,
-} from "../../reducers/userReducer";
+import { selectUser } from "../../reducers/userReducer";
 import axios from "axios";
 
 type InvitationState = "invited" | "notInvited" | "pending" | "friend";
 
 const InvitationButton = () => {
   // const isCurrent = useAppSelector(selectIsCurrentUser);
-  const user = useAppSelector(selectVisibleUser);
+  const user = useAppSelector(selectUser);
 
   const [invitationState, setInvitationState] =
     useState<InvitationState>("notInvited");

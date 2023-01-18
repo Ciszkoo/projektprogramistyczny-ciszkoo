@@ -48,47 +48,47 @@ export const fetchTempUserData = createAsyncThunk(
 );
 
 interface UserState {
-  current: Partial<UserData>;
-  temp: Partial<UserData>;
-  picked: boolean;
+  me: Partial<UserData>;
+  otherUser: Partial<UserData>;
+  isMe: boolean;
 }
 
 const initialState: UserState = {
-  current: {},
-  temp: {},
-  picked: true,
+  me: {},
+  otherUser: {},
+  isMe: true,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setCurr(state) {
-      state.picked = true;
+    setMe(state) {
+      state.isMe = true;
     },
-    setOther(state) {
-      state.picked = false;
+    setOtherUser(state) {
+      state.isMe = false;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCurrUserData.fulfilled, (state, action) => {
-      state.current = action.payload;
+      state.me = action.payload;
     });
     builder.addCase(fetchTempUserData.fulfilled, (state, action) => {
-      state.temp = action.payload;
+      state.otherUser = action.payload;
     });
   },
 });
 
-export const selectUser = (state: RootState) => state.user;
+export const selectUserRoot = (state: RootState) => state.user;
 
-export const selectCurrUser = (state: RootState) => state.user.current;
+export const selectMe = (state: RootState) => state.user.me;
 
-export const selectIsCurrentUser = (state: RootState) => state.user.picked;
+export const selectIsMe = (state: RootState) => state.user.isMe;
 
-export const selectVisibleUser = (state: RootState) =>
-  state.user.picked ? state.user.current : state.user.temp;
+export const selectUser = (state: RootState) =>
+  state.user.isMe ? state.user.me : state.user.otherUser;
 
-export const { setCurr, setOther } = userSlice.actions;
+export const { setMe, setOtherUser } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -2,10 +2,10 @@ import React from "react";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../reducers/hooks";
-import { selectCurrUser } from "../../reducers/userReducer";
+import { selectMe } from "../../reducers/userReducer";
 
 const UserProfileButton = () => {
-  const user = useAppSelector(selectCurrUser);
+  const user = useAppSelector(selectMe);
 
   return (
     <Link to={`/user/${user.id}`}>
