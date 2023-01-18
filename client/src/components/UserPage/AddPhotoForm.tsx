@@ -46,7 +46,7 @@ const AddPhotoForm = () => {
 
     if (!upload) return;
     console.log(upload);
-    const res = await axios.put("/api/user/me/avatar", { avatarID: upload });
+    const res = await axios.put("/api/user/me/edit/avatar", { value: upload });
     if (res.status !== 200) return;
     await dispatch(fetchCurrUserData());
     console.log("Uploaded!");

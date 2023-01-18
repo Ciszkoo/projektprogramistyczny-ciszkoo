@@ -6,13 +6,13 @@ import { useAuth } from "../context/AuthProvider";
 
 const LoginPage = () => {
   const [isRegister, setIsRegister] = useState<boolean>(false);
-  const [isAuthWrap, setIsAuthWrap] = useState<boolean>(false);
+  // const [isAuthWrap, setIsAuthWrap] = useState<boolean>(false);
 
-  const { isAuth } = useAuth();
+  const { isAuth, loading } = useAuth();
 
-  useEffect(() => {
-    setIsAuthWrap(isAuth);
-  }, [isAuth]);
+  // useEffect(() => {
+    // setIsAuthWrap(isAuth);
+  // }, [isAuth]);
 
   const handleSignUp = () => {
     setIsRegister(true);
@@ -24,11 +24,23 @@ const LoginPage = () => {
 
   return (
     <>
-      {!isAuthWrap && isRegister && (
+      {loading && <p>Loading...</p>}
+      {!loading && (
+        <>
+          {!isAuth && (
+            <>
+              {!isRegister && <LoginForm setIsRegister={handleSignUp} />}
+              {isRegister && <RegisterForm setIsRegister={handleCloseSignUp} />}
+            </>
+          )}
+          {isAuth && <p>Udało się zalogować</p>}
+        </>
+      )}
+      {/* {!isAuthWrap && isRegister && (
         <RegisterForm setIsRegister={handleCloseSignUp} />
       )}
       {!isAuthWrap && !isRegister && <LoginForm setIsRegister={handleSignUp} />}
-      {isAuthWrap && <p>Udało się zalogować</p>}
+      {isAuthWrap && <p>Udało się zalogować</p>} */}
     </>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 
 interface ButtonProps {
   filling: string;
-  lightness: "200";
+  lightness: "0" | "100" | "200" | "400";
   type?: "button" | "submit" | "reset";
   handleOnClick?: () => void;
   customClass?: string;

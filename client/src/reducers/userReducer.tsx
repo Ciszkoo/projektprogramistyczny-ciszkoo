@@ -39,7 +39,7 @@ export const fetchTempUserData = createAsyncThunk(
   "user/fetchTempData",
   async (id: string, thunkApi) => {
     const res = await axios
-      .post<UserDataResponse>(`/api/user/${id}`)
+      .get<UserDataResponse>(`/api/user/${id}`)
       .then((res) => res.data)
       .catch((err) => thunkApi.rejectWithValue(err));
     await thunkApi.dispatch(fetchUserPosts({ id, page: 0 }));

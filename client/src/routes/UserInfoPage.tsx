@@ -14,11 +14,11 @@ const UserInfoPage = () => {
   const user = useAppSelector(selectVisibleUser);
   const isCurr = useAppSelector(selectIsCurrentUser);
 
-  const { logoutHandler } = useAuth();
+  const { handleLogout } = useAuth();
 
   const handleDeleteUser = async () => {
     try {
-      logoutHandler();
+      handleLogout();
       await axios.delete("/api/user/me");
       console.log("Deleted");
     } catch (error) {

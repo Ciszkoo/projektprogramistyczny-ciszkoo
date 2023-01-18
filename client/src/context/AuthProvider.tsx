@@ -5,75 +5,78 @@ import {
   PropsWithChildren,
   useState,
   useEffect,
+  useLayoutEffect,
 } from "react";
 
 import { useAppDispatch } from "../reducers/hooks";
 import { fetchCurrUserData } from "../reducers/userReducer";
 
-interface IAuthContext {
+interface AuthContext {
   isAuth: boolean;
-  authHandler: (data: IFormInput) => void;
-  logoutHandler: () => void;
+  loading: boolean;
+  handleLogin: (data: LoginInput) => void;
+  handleLogout: () => void;
 }
 
-interface IFormInput {
+interface LoginInput {
   email: string;
   password: string;
 }
 
-const AuthContext = createContext<IAuthContext>({
+const AuthContext = createContext<AuthContext>({
   isAuth: false,
-  authHandler: () => {},
-  logoutHandler: () => {},
+  loading: true,
+  handleLogin: () => {},
+  handleLogout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const eff = async () => {
-      if (isAuth) {
-        await dispatch(fetchCurrUserData());
-      }
-    };
-    eff();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuth, dispatch]);
+    checkAuth();
+  }, [])
 
-  const authHandler = async (data: IFormInput) => {
+  const checkAuth = async () => {
+    try {
+      setLoading(true);
+      await axios.get("/api/sessioncheck");
+      setIsAuth(true);
+      await dispatch(fetchCurrUserData());
+    } catch (error) {
+      setIsAuth(false);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleLogin = async (data: LoginInput) => {
     try {
       await axios.post("/api/user/login", data);
       console.log("Udało się zalogować");
       setIsAuth(true);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.message);
-        return;
-      }
-      console.log(error);
+      console.log("Błąd logowania");
     }
   };
 
-  const logoutHandler = async () => {
+  const handleLogout = async () => {
     try {
       await axios.post("/api/user/logout");
-      setIsAuth(false);
       console.log("Udało się wylogować");
+      setIsAuth(false);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.message);
-        return;
-      }
-      console.log(error);
+      console.log("Błąd wylogowania");
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuth, authHandler, logoutHandler }}>
+    <AuthContext.Provider value={{ isAuth, loading, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

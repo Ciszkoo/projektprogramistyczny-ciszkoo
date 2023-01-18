@@ -8,7 +8,7 @@ export type Status = {
   firstName: string;
   lastName: string;
   at: number;
-  id: string;
+  postId: string;
   content: string;
 };
 
@@ -21,7 +21,7 @@ const StatusList = () => {
   return (
     <ul className="w-[80%]">
       {posts.map((s) => {
-        return <Post key={s.id} post={s} />;
+        return <Post key={s.postId} post={s} />;
       })}
     </ul>
   );

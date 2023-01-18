@@ -21,8 +21,9 @@ const PostStatusForm = () => {
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<PostStatusSchemaType> = async (data) => {
-    const response = await axios.post("/api/user/me/status", {
+    const response = await axios.post("/api/posts/create", {
       content: data.status,
+      privacy: "public",
     });
     if (response.status !== 200) {
       console.log("Couldn't post status");
@@ -37,7 +38,7 @@ const PostStatusForm = () => {
 
   return (
     <>
-      <p className="flex-initial font-bold">Nowy status:</p>
+      <p className="flex-initial font-bold">Nowy post:</p>
       <form
         className="flex-auto flex flex-col gap-2"
         onSubmit={handleSubmit(onSubmit)}
@@ -46,7 +47,7 @@ const PostStatusForm = () => {
           maxLength={500}
           rows={6}
           placeholder="Co u Ciebie słychać?"
-          className="flex-auto resize-none p-2 border-2 border-solid border-violet-100 rounded-xl"
+          className="flex-auto resize-none p-2 border-2 border-solid border-violet-100 rounded-xl active:border-violet-200 focus:border-violet-200"
           {...register("status")}
         />
         <Button

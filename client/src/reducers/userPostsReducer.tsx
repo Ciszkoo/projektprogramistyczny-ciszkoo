@@ -7,7 +7,7 @@ export interface Post {
   firstName: string;
   lastName: string;
   at: number;
-  id: string;
+  postId: string;
   content: string;
 }
 
@@ -24,7 +24,7 @@ export const fetchCurrUserPosts = createAsyncThunk(
   "userPosts/fetchCurrData",
   async (page: number, thunkApi) => {
     const res = await axios
-      .get<PostsResponse>(`/api/user/me/status/${page}`)
+      .get<PostsResponse>(`/api/posts/my/${page}`)
       .then((res) => res.data.posts)
       .catch((err) => thunkApi.rejectWithValue(err));
     return res;
@@ -35,7 +35,7 @@ export const fetchUserPosts = createAsyncThunk(
   "userPosts/fetchData",
   async (data: UserData, thunkApi) => {
     const res = await axios
-      .get<PostsResponse>(`/api/user/${data.id}/status/${data.page}`)
+      .get<PostsResponse>(`/api/posts/${data.id}/${data.page}`)
       .then((res) => res.data.posts)
       .catch((err) => thunkApi.rejectWithValue(err));
     return res;

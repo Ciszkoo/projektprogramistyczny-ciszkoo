@@ -22,10 +22,10 @@ const LoginForm = (props: LoginFormProps) => {
     handleSubmit,
   } = useForm<LoginFormSchemaType>({ resolver: zodResolver(LoginSchema) });
 
-  const { authHandler } = useAuth();
+  const { handleLogin } = useAuth();
 
   const onSubmit: SubmitHandler<LoginFormSchemaType> = (data) =>
-    authHandler(data);
+    handleLogin(data);
 
   return (
     <form

@@ -13,6 +13,7 @@ import UserInfoPage from "./routes/UserInfoPage";
 import UserRoute from "./routes/UserRoute";
 import UserTimeline from "./components/UserPage/UserTimeline";
 import FriendsRoute from "./routes/FriendsRoute";
+import AuthProvider from "./context/AuthProvider";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:5000";
@@ -20,6 +21,14 @@ axios.defaults.baseURL = "http://localhost:5000";
 const router = createBrowserRouter([
   {
     element: <AuthProviderLayout />,
+    // loader: async () => {
+    //   console.log("Checking session");
+    //   return await axios
+    //     .get("/api/sessioncheck")
+    //     .then((_) => true)
+    //     .catch((_) => false);
+    // },
+    // id: "auth",
     children: [
       {
         path: "/",
@@ -58,7 +67,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <StoreProvider store={store}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </StoreProvider>
   </React.StrictMode>
 );
