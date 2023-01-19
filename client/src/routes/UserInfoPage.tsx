@@ -16,7 +16,7 @@ const UserInfoPage = () => {
   const handleDeleteUser = async () => {
     try {
       handleLogout();
-      await axios.delete("/api/user/me");
+      await axios.delete("/api/user");
       console.log("Deleted");
     } catch (error) {
       error instanceof Error && error.message
@@ -49,11 +49,12 @@ const UserInfoPage = () => {
       </div>
       {isCurr && (
         <Button
-          filling="Usuń konto"
           lightness="200"
           handleOnClick={handleDeleteUser}
           customClass="w-fit self-center"
-        />
+        >
+          Usuń konto
+        </Button>
       )}
     </div>
   );

@@ -21,10 +21,9 @@ const SubPageHeader = (props: SubPageHeaderProps) => {
     <div className="flex justify-between">
       <div className="text-4xl font-bold">{props.title}</div>
       <Button
-        filling="&lt;&lt; Wróć"
         lightness="200"
         handleOnClick={handleOnClick}
-      />
+      >&lt;&lt; Wróć</Button>
     </div>
   );
 };

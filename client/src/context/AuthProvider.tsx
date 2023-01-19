@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { useAppDispatch } from "../reducers/hooks";
-import { fetchCurrUserData } from "../reducers/userReducer";
+import { fetchMyData } from "../reducers/userReducer";
 
 interface AuthContext {
   isAuth: boolean;
@@ -45,9 +45,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const checkAuth = async () => {
     try {
       setLoading(true);
-      await axios.get("/api/sessioncheck");
+      await axios.head("/api/sessioncheck");
       setIsAuth(true);
-      await dispatch(fetchCurrUserData());
+      await dispatch(fetchMyData());
     } catch (error) {
       setIsAuth(false);
     } finally {
@@ -59,6 +59,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     try {
       await axios.post("/api/user/login", data);
       console.log("Udało się zalogować");
+      await dispatch(fetchMyData());
       setIsAuth(true);
     } catch (error) {
       console.log("Błąd logowania");

@@ -19,7 +19,7 @@ const NavBar = () => {
       {!loading && isAuth && (
         <div className="flex">
           <UserProfileButton />
-          <Button filling="Wyloguj" lightness="400" customClass="mr-2" handleOnClick={handleLogout}/>
+          <Button lightness="400" customClass="mr-2" handleOnClick={handleLogout}>Wyloguj</Button>
         </div>
       )}
     </nav>

@@ -4,7 +4,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppDispatch } from "../../reducers/hooks";
-import { fetchCurrUserData } from "../../reducers/userReducer";
+import { fetchMyData } from "../../reducers/userReducer";
 
 const EditFirstNameSchema = z.string().min(2).max(50);
 const EditLastNameSchema = z.string().min(2).max(50);
@@ -39,11 +39,12 @@ const EditForm = (props: EditFormProps) => {
 
   const onSubmit = async (data: SchemaType) => {
     try {
-      await axios.put(
-        `/api/user/me/edit/${props.propName}`,
-        data
+      await axios.patch(
+        `/api/user/`,
+        data,
+        { params: {prop: props.propName}}
       );
-      await dispatch(fetchCurrUserData());
+      await dispatch(fetchMyData());
       console.log("Updated");
     } catch (error) {
       error instanceof Error && error.message

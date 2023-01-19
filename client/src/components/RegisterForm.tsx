@@ -28,7 +28,7 @@ const RegisterForm = (props: RegisterFormProps) => {
   });
   const onSubmit: SubmitHandler<RegisterFormSchemaType> = async (data) => {
     try {
-      await axios.post("/api/user/create", data);
+      await axios.post("/api/user", data);
       console.log("Account created");
       props.setIsRegister();
     } catch (error) {

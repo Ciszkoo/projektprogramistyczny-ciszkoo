@@ -3,7 +3,7 @@ import axios from "axios";
 import { RootState } from "../store";
 import { fetchCurrUserPosts, fetchUserPosts } from "./userPostsReducer";
 
-interface UserData {
+interface MyData {
   firstName: string;
   lastName: string;
   email: string;
@@ -13,21 +13,21 @@ interface UserData {
   avatar: string;
 }
 
-type UserDataResponse = UserData;
+interface OtherUserData extends MyData {
+  friendship: Friendship;
+}
 
-export const fetchCurrUserData = createAsyncThunk(
-  "user/fetchCurrData",
+type Friendship = "none" | "invited" | "invitation" | "friends";
+
+interface FriendshipData {
+  friendship: Friendship;
+}
+
+export const fetchMyData = createAsyncThunk(
+  "user/fetchMyData",
   async (_, thunkApi) => {
-    // IDK WHICH VERSION IS BETTER
-    // try {
-    //   const { data } = await axios.get<UserDataResponse>("/api/user/me");
-    //   await thunkApi.dispatch(fetchUserPosts(0));
-    //   return data;
-    // } catch (error) {
-    //   thunkApi.rejectWithValue(error);
-    // }
     const res = await axios
-      .get<UserDataResponse>("/api/user/me")
+      .get<MyData>("/api/user")
       .then((res) => res.data)
       .catch((err) => thunkApi.rejectWithValue(err));
     await thunkApi.dispatch(fetchCurrUserPosts(0));
@@ -35,11 +35,11 @@ export const fetchCurrUserData = createAsyncThunk(
   }
 );
 
-export const fetchTempUserData = createAsyncThunk(
-  "user/fetchTempData",
+export const fetchOtherUserData = createAsyncThunk(
+  "user/fetchOtherUserData",
   async (id: string, thunkApi) => {
     const res = await axios
-      .get<UserDataResponse>(`/api/user/${id}`)
+      .get<OtherUserData>(`/api/user/${id}`)
       .then((res) => res.data)
       .catch((err) => thunkApi.rejectWithValue(err));
     await thunkApi.dispatch(fetchUserPosts({ id, page: 0 }));
@@ -47,9 +47,20 @@ export const fetchTempUserData = createAsyncThunk(
   }
 );
 
+export const fetchFriendshipStatus = createAsyncThunk(
+  "user/fetchFrinedshipStatus",
+  async (id: string, thunkApi) => {
+    const res = await axios
+      .get<FriendshipData>(`/api/friends/friendship/${id}`)
+      .then((res) => res.data.friendship)
+      .catch((err) => thunkApi.rejectWithValue(err));
+    return res;
+  }
+);
+
 interface UserState {
-  me: Partial<UserData>;
-  otherUser: Partial<UserData>;
+  me: Partial<MyData>;
+  otherUser: Partial<OtherUserData>;
   isMe: boolean;
 }
 
@@ -71,11 +82,14 @@ export const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCurrUserData.fulfilled, (state, action) => {
+    builder.addCase(fetchMyData.fulfilled, (state, action) => {
       state.me = action.payload;
     });
-    builder.addCase(fetchTempUserData.fulfilled, (state, action) => {
+    builder.addCase(fetchOtherUserData.fulfilled, (state, action) => {
       state.otherUser = action.payload;
+    });
+    builder.addCase(fetchFriendshipStatus.fulfilled, (state, action) => {
+      state.otherUser.friendship = action.payload;
     });
   },
 });
@@ -83,6 +97,8 @@ export const userSlice = createSlice({
 export const selectUserRoot = (state: RootState) => state.user;
 
 export const selectMe = (state: RootState) => state.user.me;
+
+export const selectOtherUser = (state: RootState) => state.user.otherUser;
 
 export const selectIsMe = (state: RootState) => state.user.isMe;
 

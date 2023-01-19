@@ -1,53 +1,116 @@
 import React, { useState } from "react";
 import Button from "../Button/Button";
-import { useAppSelector } from "../../reducers/hooks";
-import { selectUser } from "../../reducers/userReducer";
+import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
+import {
+  fetchFriendshipStatus,
+  selectOtherUser,
+} from "../../reducers/userReducer";
 import axios from "axios";
+import { UserPlusIcon } from "@heroicons/react/24/outline";
 
-type InvitationState = "invited" | "notInvited" | "pending" | "friend";
+type InvitationState = "none" | "invited" | "invitation" | "friends";
 
 const InvitationButton = () => {
-  // const isCurrent = useAppSelector(selectIsCurrentUser);
-  const user = useAppSelector(selectUser);
+  const user = useAppSelector(selectOtherUser);
 
-  const [invitationState, setInvitationState] =
-    useState<InvitationState>("notInvited");
+  const dispatch = useAppDispatch();
 
   const handleInvite = async () => {
     try {
-      const res = await axios.post(`/api/friends/invite/${user.id}`);
-      setInvitationState("invited");
-      console.log("invite");
+      await axios.post(`/api/friends/invite/${user.id}`);
+      typeof user.id === "string" &&
+        (await dispatch(fetchFriendshipStatus(user.id)));
     } catch (error) {
-      console.log("Could not invite user");
+      console.log(error);
     }
   };
 
-  const handleCancel = () => {
-    console.log("cancel");
-    setInvitationState("notInvited");
+  const handleCancel = async () => {
+    try {
+      await axios.delete(`/api/friends/cancel/${user.id}`);
+      typeof user.id === "string" &&
+        (await dispatch(fetchFriendshipStatus(user.id)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAccept = async () => {
+    try {
+      await axios.post(`/api/friends/accept/${user.id}`);
+      typeof user.id === "string" &&
+        (await dispatch(fetchFriendshipStatus(user.id)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDecline = async () => {
+    try {
+      await axios.delete(`/api/friends/decline/${user.id}`);
+      typeof user.id === "string" &&
+        (await dispatch(fetchFriendshipStatus(user.id)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    try {
+      await axios.delete(`/api/friends/remove/${user.id}`);
+      typeof user.id === "string" &&
+        (await dispatch(fetchFriendshipStatus(user.id)));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
-      {invitationState === "notInvited" && (
+      {user.friendship === "none" && (
         <Button
-          filling="Zaproś"
-          lightness="200"
           handleOnClick={handleInvite}
-          customClass="mb-3 self-end"
-        />
-      )}
-      {invitationState === "invited" && (
-        <Button
-          filling="Anuluj zaproszenie"
           lightness="200"
-          handleOnClick={handleCancel}
           customClass="mb-3 self-end"
-        />
+        >
+          <UserPlusIcon className="h-6 w-6" />
+        </Button>
       )}
-      {invitationState === "friend" && (
-        <Button filling="Znajomy" lightness="100" customClass="mb-3 self-end" />
+      {user.friendship === "invited" && (
+        <Button
+          handleOnClick={handleCancel}
+          lightness="200"
+          customClass="mb-3 self-end"
+        >
+          Anuluj zaproszenie
+        </Button>
+      )}
+      {user.friendship === "invitation" && (
+        <>
+          <Button
+            lightness="200"
+            customClass="mb-3 self-end"
+            handleOnClick={handleAccept}
+          >
+            Akceptuj zaproszenie
+          </Button>
+          <Button
+            lightness="200"
+            customClass="mb-3 self-end"
+            handleOnClick={handleDecline}
+          >
+            Odrzuć zaproszenie
+          </Button>
+        </>
+      )}
+      {user.friendship === "friends" && (
+        <Button
+          lightness="200"
+          customClass="mb-3 self-end"
+          handleOnClick={handleRemoveFriend}
+        >
+          Usuń z grona znajomych
+        </Button>
       )}
     </>
   );
