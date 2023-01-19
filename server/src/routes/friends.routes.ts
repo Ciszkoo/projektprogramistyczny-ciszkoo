@@ -4,6 +4,7 @@ import {
   cancelHandler,
   declineHandler,
   getFriendsHandler,
+  getFriendshipStatusHandler,
   getInvitationsHandler,
   getProposalsHandler,
   inviteHandler,
@@ -32,7 +33,7 @@ router.post(
 );
 
 // Odrzucenie zaproszenia do znajomych
-router.post(
+router.delete(
   "/decline/:id",
   isAuth,
   validateResource(blankSchema),
@@ -40,7 +41,7 @@ router.post(
 );
 
 // Anulowanie zaproszenia do znajomych
-router.post(
+router.delete(
   "/cancel/:id",
   isAuth,
   validateResource(blankSchema),
@@ -64,12 +65,7 @@ router.get(
 );
 
 // Pobieranie znajomych
-router.get(
-  "/friends",
-  isAuth,
-  validateResource(blankSchema),
-  getFriendsHandler
-);
+router.get("", isAuth, validateResource(blankSchema), getFriendsHandler);
 
 // Pobieranie propozycji znajomych
 router.get(
@@ -77,6 +73,14 @@ router.get(
   isAuth,
   validateResource(blankSchema),
   getProposalsHandler
+);
+
+// Pobieranie statusu znajomości
+router.get(
+  "/friendship/:id",
+  isAuth,
+  validateResource(blankSchema),
+  getFriendshipStatusHandler
 );
 
 export default router;

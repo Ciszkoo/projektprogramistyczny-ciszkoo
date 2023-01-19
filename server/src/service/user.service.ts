@@ -61,7 +61,10 @@ export const editData = async (prop: EditProp, value: string, id: string) => {
 export const deleteUser = async (id: string) => {
   const session = driver.session();
   try {
-    await session.run("MATCH (c:Comment)<-[:COMMENTED]-(u:User {id: $id})-[:POSTED]->(p:Post) DETACH DELETE u, c, p", { id });
+    await session.run(
+      "MATCH (c:Comment)<-[:COMMENTED]-(u:User {id: $id})-[:POSTED]->(p:Post) DETACH DELETE u, c, p",
+      { id }
+    );
     return true;
   } catch (error) {
     log.error("Could not delete user");

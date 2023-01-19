@@ -9,6 +9,7 @@ import {
 } from "../service/user.service";
 import { omit } from "lodash";
 import { EditProp, UserToCreate } from "../types/types";
+import { EditBody, EditQuery } from "../schema/edit.schema";
 
 // Tworzenie użytkownika
 export const createUserHandler = async (
@@ -53,25 +54,23 @@ export const logoutHandler = (
 
 // Edycja danych użytkownika
 export const editHandler = async (
-  req: Request<{ prop: EditProp }>,
+  req: Request<{}, {}, EditBody, EditQuery>,
   res: Response
 ) => {
   const { value } = req.body;
-  const prop = req.params.prop;
+  const prop = req.query.prop;
   const user = await getUserBy("id", req.session.passport?.user as string);
   if (!user) {
     return res.status(404).send({ message: "User not found" });
   }
   if (
-    user[prop].replace("https://ucarecdn.com/", "").replace("/", "") === value
+    user[prop] === value
   ) {
     return res.status(400).send({ message: "Same value" });
   }
-  const valModified =
-    prop === "avatar" ? `https://ucarecdn.com/${value}/` : value;
   const result = await editData(
     prop,
-    valModified,
+    value,
     req.session.passport?.user as string
   );
   if (!result) {

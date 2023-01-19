@@ -6,7 +6,7 @@ import { searchSchema } from "../schema/search.schema";
 
 const router = Router();
 
-router.post(
+router.get(
   "/search",
   isAuth,
   validateResource(searchSchema),

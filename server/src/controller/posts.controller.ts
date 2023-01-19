@@ -19,7 +19,7 @@ export const createPostHandler = async (
 ) => {
   const { content, privacy, image } = req.body;
   const id = req.session.passport?.user as string;
-  const url = typeof image === "string" ? `https://ucarecdn.com/${image}/` : "";
+  const url = typeof image === "string" ? `${image}` : "";
   const querry = await createPost(id, content, privacy, url);
   if (!querry) {
     return res.status(500).send({ message: "Could not create post" });
@@ -47,7 +47,7 @@ export const editPostHandler = async (
   const privacy = typeof body.privacy !== "undefined" ? body.privacy : null;
   const image =
     typeof body.image !== "undefined"
-      ? `https://ucarecdn.com/${body.image}/`
+      ? `${body.image}`
       : null;
   const postId = req.params.id;
   const id = req.session.passport?.user as string;

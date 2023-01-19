@@ -9,6 +9,7 @@ import {
   invite,
   remove,
 } from "../service/friends.service";
+import { getFriendshipStatus } from "../service/user.service";
 
 // Wysyłanie zaproszenia do znajomych
 export const inviteHandler = async (req: Request, res: Response) => {
@@ -102,3 +103,14 @@ export const getProposalsHandler = async (req: Request, res: Response) => {
   }
   return res.status(200).send({ proposals: result });
 };
+
+// Pobieranie statusu znajomości
+export const getFriendshipStatusHandler = async (req: Request, res: Response) => {
+  const myId = req.session.passport?.user as string;
+  const id = req.params.id;
+  const relation = await getFriendshipStatus(id, myId);
+  if (!relation) {
+    return res.status(500).send({ message: "Couldn't get user info" });
+  }
+  return res.status(200).send({ friendship: relation });
+}

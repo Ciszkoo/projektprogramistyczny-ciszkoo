@@ -1,7 +1,7 @@
 import { object, string, TypeOf } from "zod";
 
 export const searchSchema = object({
-  body: object({
+  query: object({
     query: string({
       required_error: "Content is required",
     })
@@ -10,4 +10,4 @@ export const searchSchema = object({
   }),
 });
 
-export type SearchInput = TypeOf<typeof searchSchema>["body"];
+export type SearchInput = TypeOf<typeof searchSchema>["query"];
