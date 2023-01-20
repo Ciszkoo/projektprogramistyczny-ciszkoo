@@ -1,10 +1,11 @@
 import { useState } from "react";
+import Dashboard from "../components/Dashboard/Dashboard";
 
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 import { useAuth } from "../context/AuthProvider";
 
-const LoginPage = () => {
+const MainRoute = () => {
   const [isRegister, setIsRegister] = useState<boolean>(false);
 
   const { isAuth, loading } = useAuth();
@@ -28,11 +29,11 @@ const LoginPage = () => {
               {isRegister && <RegisterForm setIsRegister={handleCloseSignUp} />}
             </>
           )}
-          {isAuth && <p>Udało się zalogować</p>}
+          {isAuth && <Dashboard />}
         </>
       )}
     </>
   );
 };
 
-export default LoginPage;
+export default MainRoute;

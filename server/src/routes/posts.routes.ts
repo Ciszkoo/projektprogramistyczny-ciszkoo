@@ -38,10 +38,10 @@ router.put("/unlike/:id", isAuth, unlikePostHandler);
 // Pobranie moich postów
 router.get("/my/:page", isAuth, getMyPostsHandler);
 
-// Pobranie postów innego użytkownika
-router.get("/:id/:page", isAuth, getPostsHandler);
-
 // Pobieranie wszystkich dostępnych postów
 router.get("/all/:page", isAuth, getAllPostsHandler);
+
+// Pobranie postów innego użytkownika
+router.get("/:id/:page", isAuth, getPostsHandler);
 
 export default router;

@@ -69,6 +69,7 @@ const InvitationButton = () => {
     <>
       {user.friendship === "none" && (
         <Button
+          circle={true}
           handleOnClick={handleInvite}
           lightness="200"
           customClass="mb-3 self-end"
@@ -78,6 +79,7 @@ const InvitationButton = () => {
       )}
       {user.friendship === "invited" && (
         <Button
+          circle={false}
           handleOnClick={handleCancel}
           lightness="200"
           customClass="mb-3 self-end"
@@ -88,6 +90,7 @@ const InvitationButton = () => {
       {user.friendship === "invitation" && (
         <>
           <Button
+            circle={false}
             lightness="200"
             customClass="mb-3 self-end"
             handleOnClick={handleAccept}
@@ -95,6 +98,7 @@ const InvitationButton = () => {
             Akceptuj zaproszenie
           </Button>
           <Button
+            circle={false}
             lightness="200"
             customClass="mb-3 self-end"
             handleOnClick={handleDecline}
@@ -105,6 +109,7 @@ const InvitationButton = () => {
       )}
       {user.friendship === "friends" && (
         <Button
+          circle={false}
           lightness="200"
           customClass="mb-3 self-end"
           handleOnClick={handleRemoveFriend}

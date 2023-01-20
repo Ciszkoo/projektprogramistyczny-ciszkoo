@@ -42,14 +42,27 @@ export const fetchUserPosts = createAsyncThunk(
   }
 );
 
+export const fetchFriendsPosts = createAsyncThunk(
+  "userPosts/fetchFriendsPosts",
+  async (page: number, thunkApi) => {
+    const res = await axios
+      .get<PostsResponse>(`/api/posts/all/${page}`)
+      .then((res) => res.data.posts)
+      .catch((err) => thunkApi.rejectWithValue(err));
+    return res;
+  }
+);
+
 interface UserPostsState {
   currentUserPosts: Post[];
   userPosts: Post[];
+  friendsPosts: Post[];
 }
 
 const initialState: UserPostsState = {
   currentUserPosts: [],
   userPosts: [],
+  friendsPosts: [],
 };
 
 export const userPostsSlice = createSlice({
@@ -65,6 +78,10 @@ export const userPostsSlice = createSlice({
       state.userPosts.splice(0, state.userPosts.length);
       action.payload.forEach((p) => state.userPosts.push(p));
     });
+    builder.addCase(fetchFriendsPosts.fulfilled, (state, action) => {
+      state.friendsPosts.splice(0, state.friendsPosts.length);
+      action.payload.forEach((p) => state.friendsPosts.push(p));
+    });
   },
 });
 
@@ -72,5 +89,7 @@ export const selectUserPosts = (state: RootState) =>
   state.user.isMe
     ? state.userPosts.currentUserPosts
     : state.userPosts.userPosts;
+
+export const selectFriendsPosts = (state: RootState) => state.userPosts.friendsPosts;
 
 export default userPostsSlice.reducer;

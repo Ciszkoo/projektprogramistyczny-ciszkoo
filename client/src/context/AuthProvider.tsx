@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { useAppDispatch } from "../reducers/hooks";
+import { fetchFriendsPosts } from "../reducers/userPostsReducer";
 import { fetchMyData } from "../reducers/userReducer";
 
 interface AuthContext {
@@ -40,7 +41,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     checkAuth();
-  }, [])
+  }, []);
 
   const checkAuth = async () => {
     try {
@@ -48,18 +49,20 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       await axios.head("/api/sessioncheck");
       setIsAuth(true);
       await dispatch(fetchMyData());
+      await dispatch(fetchFriendsPosts(0));
     } catch (error) {
       setIsAuth(false);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleLogin = async (data: LoginInput) => {
     try {
       await axios.post("/api/user/login", data);
       console.log("Udało się zalogować");
       await dispatch(fetchMyData());
+      await dispatch(fetchFriendsPosts(0));
       setIsAuth(true);
     } catch (error) {
       console.log("Błąd logowania");
@@ -77,7 +80,9 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuth, loading, handleLogin, handleLogout }}>
+    <AuthContext.Provider
+      value={{ isAuth, loading, handleLogin, handleLogout }}
+    >
       {children}
     </AuthContext.Provider>
   );

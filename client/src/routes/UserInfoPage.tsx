@@ -49,6 +49,7 @@ const UserInfoPage = () => {
       </div>
       {isCurr && (
         <Button
+          circle={false}
           lightness="200"
           handleOnClick={handleDeleteUser}
           customClass="w-fit self-center"

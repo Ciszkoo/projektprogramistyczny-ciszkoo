@@ -51,10 +51,13 @@ const PostStatusForm = () => {
           {...register("status")}
         />
         <Button
+          circle={false}
           lightness="200"
           type="submit"
           customClass="self-end"
-        >Opublikuj</Button>
+        >
+          Opublikuj
+        </Button>
       </form>
     </>
   );

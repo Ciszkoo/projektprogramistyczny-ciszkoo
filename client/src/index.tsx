@@ -5,7 +5,7 @@ import AuthProviderLayout from "./components/AuthProviderLayout";
 import { Provider as StoreProvider } from "react-redux";
 import "./index.css";
 
-import LoginPage from "./routes/LoginPage";
+import MainRoute from "./routes/MainRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { store } from "./store";
 import axios from "axios";
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LoginPage />,
+        element: <MainRoute />,
       },
       {
         path: "/user/:id",
