@@ -6,6 +6,7 @@ import {
   getFriendsHandler,
   getFriendshipStatusHandler,
   getInvitationsHandler,
+  getOtherUserFriendsHandler,
   getProposalsHandler,
   inviteHandler,
   removeHandler,
@@ -66,6 +67,10 @@ router.get(
 
 // Pobieranie znajomych
 router.get("", isAuth, validateResource(blankSchema), getFriendsHandler);
+
+// Pobieranie znajomych innego użytkownika
+router.get("/:id", isAuth, validateResource(blankSchema), getOtherUserFriendsHandler);
+
 
 // Pobieranie propozycji znajomych
 router.get(

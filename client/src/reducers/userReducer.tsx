@@ -3,7 +3,7 @@ import axios from "axios";
 import { RootState } from "../store";
 import { fetchCurrUserPosts, fetchUserPosts } from "./userPostsReducer";
 
-interface MyData {
+export interface MyData {
   firstName: string;
   lastName: string;
   email: string;
@@ -13,7 +13,7 @@ interface MyData {
   avatar: string;
 }
 
-interface OtherUserData extends MyData {
+export interface OtherUserData extends MyData {
   friendship: Friendship;
 }
 
@@ -59,14 +59,31 @@ export const fetchFriendshipStatus = createAsyncThunk(
 );
 
 interface UserState {
-  me: Partial<MyData>;
-  otherUser: Partial<OtherUserData>;
+  me: MyData;
+  otherUser: OtherUserData;
   isMe: boolean;
 }
 
 const initialState: UserState = {
-  me: {},
-  otherUser: {},
+  me: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    dateOfBirth: "",
+    gender: "",
+    id: "",
+    avatar: "",
+  },
+  otherUser: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    dateOfBirth: "",
+    gender: "",
+    id: "",
+    avatar: "",
+    friendship: "none",
+  },
   isMe: true,
 };
 
@@ -102,7 +119,7 @@ export const selectOtherUser = (state: RootState) => state.user.otherUser;
 
 export const selectIsMe = (state: RootState) => state.user.isMe;
 
-export const selectUser = (state: RootState) =>
+export const selectUser = (state: RootState): OtherUserData | MyData =>
   state.user.isMe ? state.user.me : state.user.otherUser;
 
 export const { setMe, setOtherUser } = userSlice.actions;

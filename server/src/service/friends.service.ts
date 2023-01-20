@@ -138,7 +138,7 @@ export const getFriends = async (id: string) => {
 
   try {
     const result = await session.run(
-      "MATCH (u:User)-[:FRIENDS]-(f:User) WHERE u.id = $id RETURN f",
+      "MATCH (u:User)-[:FRIENDS]->(f:User) WHERE u.id = $id RETURN f",
       { id }
     );
     const friends = result.records.map((record) => {

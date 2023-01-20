@@ -79,7 +79,7 @@ export const getInvitationsHandler = async (req: Request, res: Response) => {
   if (!result) {
     return res.status(404).send({ message: "Could not get invitations" });
   }
-  return res.status(200).send({ invitations: result });
+  return res.status(200).send(result);
 };
 
 // Pobieranie listy znajomych
@@ -90,7 +90,21 @@ export const getFriendsHandler = async (req: Request, res: Response) => {
   if (!result) {
     return res.status(404).send({ message: "Could not get friends" });
   }
-  return res.status(200).send({ friends: result });
+  return res.status(200).send(result);
+};
+
+// Pobieranie listy znajomych inego użytkownika
+export const getOtherUserFriendsHandler = async (
+  req: Request,
+  res: Response
+) => {
+  const id = req.params.id;
+
+  const result = await getFriends(id);
+  if (!result) {
+    return res.status(404).send({ message: "Could not get friends" });
+  }
+  return res.status(200).send(result);
 };
 
 // Pobieranie propozycji znajomych
@@ -105,7 +119,10 @@ export const getProposalsHandler = async (req: Request, res: Response) => {
 };
 
 // Pobieranie statusu znajomości
-export const getFriendshipStatusHandler = async (req: Request, res: Response) => {
+export const getFriendshipStatusHandler = async (
+  req: Request,
+  res: Response
+) => {
   const myId = req.session.passport?.user as string;
   const id = req.params.id;
   const relation = await getFriendshipStatus(id, myId);
@@ -113,4 +130,4 @@ export const getFriendshipStatusHandler = async (req: Request, res: Response) =>
     return res.status(500).send({ message: "Couldn't get user info" });
   }
   return res.status(200).send({ friendship: relation });
-}
+};
