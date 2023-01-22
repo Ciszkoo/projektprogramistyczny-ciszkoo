@@ -51,8 +51,8 @@ const Search = () => {
   const dispatch = useAppDispatch();
 
   const searchResultClickHandler = (id: string) => async () => {
-    await dispatch(fetchUserData(id));
     reset();
+    await dispatch(fetchUserData(id));
     navigate(`/user/${id}`);
   };
 
@@ -113,6 +113,7 @@ const Search = () => {
                   <img
                     className="rounded-full"
                     src={`${res.avatar}/-/scale_crop/40x40/`}
+                    alt="avatar"
                   />
                   <p>
                     {res.firstName} {res.lastName}

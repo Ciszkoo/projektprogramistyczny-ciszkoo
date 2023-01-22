@@ -31,6 +31,7 @@ export const fetchUserData = createAsyncThunk(
 interface UserState {
   user: UserData;
   myId: string;
+  status: "idle" | "loading";
 }
 
 const initialState: UserState = {
@@ -45,6 +46,7 @@ const initialState: UserState = {
     friendship: "none",
   },
   myId: "",
+  status: "idle",
 };
 
 export const userSlice = createSlice({
@@ -56,11 +58,17 @@ export const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchUserData.pending, (state, action) => {
+      state.status = "loading";
+    })
     builder.addCase(fetchUserData.fulfilled, (state, action) => {
       state.user = action.payload;
+      state.status = "idle";
     });
   },
 });
+
+export const selectUserFetchStatus = (state: RootState) => state.user.status;
 
 export const selectUser = (state: RootState) => state.user.user;
 

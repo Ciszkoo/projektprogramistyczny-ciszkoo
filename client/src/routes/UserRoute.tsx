@@ -1,5 +1,7 @@
 import React from "react";
 import UserPage from "../components/UserPage/UserPage";
+import { useAppSelector } from "../reducers/hooks";
+import { selectUserFetchStatus } from "../reducers/userReducer";
 
 export interface UserData {
   firstName: string;
@@ -13,10 +15,9 @@ export interface UserData {
 }
 
 const UserRoute = () => {
-  return (
-      <UserPage />
-  );
-};
+  const status = useAppSelector(selectUserFetchStatus);
 
+  return status === "idle" ? <UserPage /> : <div>Loading...</div>;
+};
 
 export default UserRoute;

@@ -1,9 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
 import { useAppSelector } from "../../reducers/hooks";
 import { selectMyId, selectUser } from "../../reducers/userReducer";
-
 import Card from "../Card/Card";
 import SubPageHeader from "../SubPage/SubPageHeader";
 import Friend from "./Friend";
@@ -17,18 +15,14 @@ export interface FriendI {
   avatar: string;
 }
 
-interface FriendsSubPageProps {
-  isMe: boolean;
-}
-
 const FriendsSubPage = () => {
   const [isMain, setIsMain] = useState<boolean>(true);
   const [friends, setFriends] = useState<FriendI[]>([]);
   const [invitations, setInvitations] = useState<FriendI[]>([]);
 
-  const myId = useAppSelector(selectMyId)
+  const myId = useAppSelector(selectMyId);
 
-  const user = useAppSelector(selectUser)
+  const user = useAppSelector(selectUser);
 
   const handleFetchFriends = async (id: string) => {
     try {
@@ -49,7 +43,8 @@ const FriendsSubPage = () => {
   };
 
   useEffect(() => {
-      handleFetchFriends(user.id);
+    handleFetchFriends(user.id);
+    // eslint-disable-next-line
   }, [isMain]);
 
   useEffect(() => {
@@ -82,14 +77,14 @@ const FriendsSubPage = () => {
       {isMain && (
         <ul>
           {friends.map((friend) => (
-            <Friend key={friend.id} friend={friend}/>
+            <Friend key={friend.id} friend={friend} />
           ))}
         </ul>
       )}
       {!isMain && (
         <ul>
           {invitations.map((friend) => (
-            <InvitingFriend key={friend.id} friend={friend}/>
+            <InvitingFriend key={friend.id} friend={friend} />
           ))}
         </ul>
       )}

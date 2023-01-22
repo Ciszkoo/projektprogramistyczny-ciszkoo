@@ -3,27 +3,17 @@ import Button from "../Button/Button";
 
 import axios from "axios";
 import { UserPlusIcon } from "@heroicons/react/24/outline";
-import { UserData } from "../../routes/UserRoute";
 import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
 import { fetchUserData, selectUser } from "../../reducers/userReducer";
 
-type InvitationState = "none" | "invited" | "invitation" | "friends";
-
-// interface InvitationButtonProps {
-//   user: UserData;
-//   refresh: () => void;
-// }
-
-// const InvitationButton = (props: InvitationButtonProps) => {
 const InvitationButton = () => {
-  const user = useAppSelector(selectUser)
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   const handleInvite = async () => {
     try {
       await axios.post(`/api/friends/invite/${user.id}`);
-      // props.refresh();
-      dispatch(fetchUserData(user.id))
+      dispatch(fetchUserData(user.id));
     } catch (error) {
       console.log(error);
     }
@@ -32,8 +22,7 @@ const InvitationButton = () => {
   const handleCancel = async () => {
     try {
       await axios.delete(`/api/friends/cancel/${user.id}`);
-      // props.refresh();
-      dispatch(fetchUserData(user.id))
+      dispatch(fetchUserData(user.id));
     } catch (error) {
       console.log(error);
     }
@@ -42,8 +31,7 @@ const InvitationButton = () => {
   const handleAccept = async () => {
     try {
       await axios.post(`/api/friends/accept/${user.id}`);
-      // props.refresh();
-      dispatch(fetchUserData(user.id))
+      dispatch(fetchUserData(user.id));
     } catch (error) {
       console.log(error);
     }
@@ -52,8 +40,7 @@ const InvitationButton = () => {
   const handleDecline = async () => {
     try {
       await axios.delete(`/api/friends/decline/${user.id}`);
-      // props.refresh();
-      dispatch(fetchUserData(user.id))
+      dispatch(fetchUserData(user.id));
     } catch (error) {
       console.log(error);
     }
@@ -62,8 +49,7 @@ const InvitationButton = () => {
   const handleRemoveFriend = async () => {
     try {
       await axios.delete(`/api/friends/remove/${user.id}`);
-      // props.refresh();
-      dispatch(fetchUserData(user.id))
+      dispatch(fetchUserData(user.id));
     } catch (error) {
       console.log(error);
     }

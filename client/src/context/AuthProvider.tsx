@@ -1,18 +1,17 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import {
   createContext,
   useContext,
   PropsWithChildren,
   useState,
   useEffect,
-  useLayoutEffect,
 } from "react";
 
 import { useAppDispatch } from "../reducers/hooks";
 import { fetchFriendsPosts } from "../reducers/postsReducer";
 import { fetchUserData, setMyId } from "../reducers/userReducer";
 
-interface AuthContext {
+interface AuthContextI {
   isAuth: boolean;
   loading: boolean;
   handleLogin: (data: LoginInput) => void;
@@ -24,7 +23,7 @@ interface LoginInput {
   password: string;
 }
 
-const AuthContext = createContext<AuthContext>({
+const AuthContext = createContext<AuthContextI>({
   isAuth: false,
   loading: true,
   handleLogin: () => {},
@@ -41,6 +40,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     checkAuth();
+    // eslint-disable-next-line
   }, []);
 
   const checkAuth = async () => {
@@ -60,7 +60,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const handleLogin = async (input: LoginInput) => {
     try {
-      const {data} = await axios.post("/api/user/login", input);
+      const { data } = await axios.post("/api/user/login", input);
       console.log("Udało się zalogować");
       dispatch(setMyId(data));
       await dispatch(fetchUserData(data));

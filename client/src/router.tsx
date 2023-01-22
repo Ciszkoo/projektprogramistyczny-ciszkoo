@@ -5,7 +5,7 @@ import FriendsRoute from "./routes/FriendsRoute";
 import MainRoute from "./routes/MainRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import UserInfoRoute from "./routes/UserInfoRoute";
-import UserRoute, { UserData } from "./routes/UserRoute";
+import UserRoute from "./routes/UserRoute";
 
 export const router = createBrowserRouter([
   {

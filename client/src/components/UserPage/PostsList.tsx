@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Post from "../Post/Post";
 import { Post as PostI } from "../../reducers/postsReducer";
 
@@ -10,13 +10,7 @@ const PostsList = (props: PostsListProps) => {
   return (
     <ul className="w-[80%]">
       {props.posts.map((s) => {
-        return (
-          <Post
-            key={s.postId}
-            post={s}
-            whose={"other"}
-          />
-        );
+        return <Post key={s.postId} post={s} whose={"other"} />;
       })}
     </ul>
   );

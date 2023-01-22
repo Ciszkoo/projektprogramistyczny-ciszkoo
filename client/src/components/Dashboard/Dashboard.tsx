@@ -12,6 +12,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(fetchFriendsPosts(0))
+  // eslint-disable-next-line
   }, [])
 
   return (

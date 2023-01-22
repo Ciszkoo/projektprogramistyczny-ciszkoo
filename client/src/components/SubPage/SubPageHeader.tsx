@@ -1,7 +1,5 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router";
-import { useAppSelector } from "../../reducers/hooks";
-import { selectMyId } from "../../reducers/userReducer";
 import Button from "../Button/Button";
 
 interface SubPageHeaderProps {
