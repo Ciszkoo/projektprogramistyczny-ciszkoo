@@ -9,8 +9,8 @@ import {
 } from "react";
 
 import { useAppDispatch } from "../reducers/hooks";
-import { fetchFriendsPosts } from "../reducers/userPostsReducer";
-import { fetchMyData } from "../reducers/userReducer";
+import { fetchFriendsPosts } from "../reducers/postsReducer";
+import { fetchUserData, setMyId } from "../reducers/userReducer";
 
 interface AuthContext {
   isAuth: boolean;
@@ -46,9 +46,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const checkAuth = async () => {
     try {
       setLoading(true);
-      await axios.head("/api/sessioncheck");
+      const { data } = await axios.get("/api/sessioncheck");
+      dispatch(setMyId(data));
       setIsAuth(true);
-      await dispatch(fetchMyData());
+      await dispatch(fetchUserData(data));
       await dispatch(fetchFriendsPosts(0));
     } catch (error) {
       setIsAuth(false);
@@ -57,11 +58,12 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const handleLogin = async (data: LoginInput) => {
+  const handleLogin = async (input: LoginInput) => {
     try {
-      await axios.post("/api/user/login", data);
+      const {data} = await axios.post("/api/user/login", input);
       console.log("Udało się zalogować");
-      await dispatch(fetchMyData());
+      dispatch(setMyId(data));
+      await dispatch(fetchUserData(data));
       await dispatch(fetchFriendsPosts(0));
       setIsAuth(true);
     } catch (error) {

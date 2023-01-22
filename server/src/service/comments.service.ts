@@ -10,12 +10,16 @@ export const createComment = async (
   const session = driver.session();
 
   try {
-    await session.run(
+    const result = await session.run(
       "MATCH (u:User {id: $userId}), (p:Post {id: $postId}) CREATE (u)-[:COMMENTED]->(c:Comment {id: apoc.create.uuid(), content: $content, at: apoc.date.currentTimestamp()})-[:ON]->(p) RETURN c",
       { userId, postId, content }
     );
-    return true;
+    if (result.summary.counters.containsUpdates()){
+      return true;
+    }
+    return false;
   } catch (error) {
+    log.error(error);
     return false;
   } finally {
     await session.close();

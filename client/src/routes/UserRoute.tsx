@@ -1,23 +1,22 @@
-import React, { useLayoutEffect } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 import UserPage from "../components/UserPage/UserPage";
-import { useAppDispatch, useAppSelector } from "../reducers/hooks";
-import { selectMe, setMe, setOtherUser } from "../reducers/userReducer";
+
+export interface UserData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  dateOfBirth: string;
+  gender: string;
+  id: string;
+  avatar: string;
+  friendship: "none" | "invited" | "invitation" | "friends";
+}
 
 const UserRoute = () => {
-  const user = useAppSelector(selectMe);
-
-  const { id } = useParams();
-
-  const dispatch = useAppDispatch();
-
-  const condition = id === user.id;
-
-  useLayoutEffect(() => {
-    condition ? dispatch(setMe()) : dispatch(setOtherUser());
-  }, [condition, dispatch]);
-
-  return <UserPage />;
+  return (
+      <UserPage />
+  );
 };
+
 
 export default UserRoute;

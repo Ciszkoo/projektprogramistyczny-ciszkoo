@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 
 type Method = "get" | "post" | "put" | "delete";
 
-export const useFetch = (url: string, method: Method, body?: object) => {
+export const useFetch = <T>(url: string, method: Method, body?: object) => {
   const [loading, setLoading] = useState(true);
-  const [apiData, setApiData] = useState(null);
+  const [apiData, setApiData] = useState<T | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -20,5 +20,15 @@ export const useFetch = (url: string, method: Method, body?: object) => {
     fetchData();
   }, [url, method, body]);
 
-  return { loading, apiData, error };
+  const refresh = async () => {
+    setLoading(true);
+    await axios({ method: method, url: url, data: body })
+      .then((res) => setApiData(res.data))
+      .catch((err) => {
+        setError(true);
+      });
+    setLoading(false);
+  }
+
+  return { loading, apiData, error, refresh };
 };

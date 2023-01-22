@@ -1,15 +1,14 @@
 import React from "react";
-import { useAppSelector } from "../reducers/hooks";
-import { selectIsMe, selectUser } from "../reducers/userReducer";
-import UserDataField from "../components/UserEdit/UserDataField";
-import SubPageHeader from "../components/SubPage/SubPageHeader";
-import { useAuth } from "../context/AuthProvider";
+import { useAppSelector } from "../../reducers/hooks";
+import SubPageHeader from "../SubPage/SubPageHeader";
+import UserDataField from "../UserEdit/UserDataField";
+import { selectUser } from "../../reducers/userReducer";
+import { useAuth } from "../../context/AuthProvider";
 import axios from "axios";
-import Button from "../components/Button/Button";
+import Button from "../Button/Button";
 
 const UserInfoPage = () => {
   const user = useAppSelector(selectUser);
-  const isCurr = useAppSelector(selectIsMe);
 
   const { handleLogout } = useAuth();
 
@@ -47,7 +46,7 @@ const UserInfoPage = () => {
         />
         <UserDataField label="Płeć" value={user.gender} propName="gender" />
       </div>
-      {isCurr && (
+      {user.friendship === "me" && (
         <Button
           circle={false}
           lightness="200"

@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAppDispatch } from "../../reducers/hooks";
-import { fetchMyData } from "../../reducers/userReducer";
+import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
+import { fetchUserData, selectMyId } from "../../reducers/userReducer";
 import uploadcareClient from "../../utils/uploadcareClient";
 
 type Input = {
@@ -13,6 +13,8 @@ const AddPhotoForm = () => {
   const { register, handleSubmit, reset, watch } = useForm<Input>();
   const [img, setImg] = useState<ArrayBuffer>();
   const image = watch("image");
+
+  const id = useAppSelector(selectMyId);
 
   const dispatch = useAppDispatch();
 
@@ -48,7 +50,7 @@ const AddPhotoForm = () => {
     console.log(upload);
     const res = await axios.patch("/api/user", { value: `https://ucarecdn.com/${upload}/` }, { params: { prop: "avatar" } });
     if (res.status !== 200) return;
-    await dispatch(fetchMyData());
+    await dispatch(fetchUserData(id));
     console.log("Uploaded!");
   };
 

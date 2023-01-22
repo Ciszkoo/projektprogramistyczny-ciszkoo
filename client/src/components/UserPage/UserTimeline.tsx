@@ -1,20 +1,23 @@
 import React from "react";
 import { useAppSelector } from "../../reducers/hooks";
-import { selectIsMe } from "../../reducers/userReducer";
-import PostStatusForm from "./PostStatusForm";
-import StatusList from "./StatusList";
+import { selectUserPosts } from "../../reducers/postsReducer";
+import { selectUser } from "../../reducers/userReducer";
+import Card from "../Card/Card";
+import PostForm from "./PostForm";
+import PostsList from "./PostsList";
 
 const UserTimeline = () => {
-  const isCurr = useAppSelector(selectIsMe);
+  const posts = useAppSelector(selectUserPosts);
+  const user = useAppSelector(selectUser);
 
   return (
     <>
-      {isCurr && (
-        <div className="w-[80%] bg-white shadow-lg rounded-xl p-5 flex flex-col gap-2">
-          <PostStatusForm />
-        </div>
+      {user.friendship === "me" && (
+        <Card customClass="w-[80%]">
+          <PostForm />
+        </Card>
       )}
-      <StatusList />
+      <PostsList posts={posts} />
     </>
   );
 };

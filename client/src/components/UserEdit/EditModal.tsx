@@ -10,8 +10,8 @@ interface EditModalProps {
 const EditModal = (props: EditModalProps) => {
   return (
     <>
-      <div className="h-screen w-screen bg-gray-400 absolute top-[50%] left-[50%] -translate-y-2/4 -translate-x-2/4 opacity-50"></div>
-      <div className="absolute top-[50%] left-[50%] -translate-y-2/4 -translate-x-2/4 bg-white flex flex-col p-10 rounded-xl text-lg gap-2">
+      <div className="z-40 h-screen w-screen bg-gray-400 absolute top-[50%] left-[50%] -translate-y-2/4 -translate-x-2/4 opacity-50"></div>
+      <div className="z-50 absolute top-[50%] left-[50%] -translate-y-2/4 -translate-x-2/4 bg-white flex flex-col p-10 rounded-xl text-lg gap-2">
         <p className="font-bold">{props.label}:</p>
         <EditForm label={props.label} propName={props.propName} />
         <button

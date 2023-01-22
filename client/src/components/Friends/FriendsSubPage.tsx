@@ -1,34 +1,38 @@
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { useAppSelector } from "../../reducers/hooks";
-import {
-  MyData,
-  OtherUserData,
-  selectIsMe,
-  selectUser,
-} from "../../reducers/userReducer";
+import { selectMyId, selectUser } from "../../reducers/userReducer";
+
 import Card from "../Card/Card";
 import SubPageHeader from "../SubPage/SubPageHeader";
+import Friend from "./Friend";
 import FriendsSubSelect from "./FriendsSubSelect";
+import InvitingFriend from "./InvitingFriend";
 
-interface Friend {
+export interface FriendI {
   id: string;
   firstName: string;
   lastName: string;
   avatar: string;
 }
 
+interface FriendsSubPageProps {
+  isMe: boolean;
+}
+
 const FriendsSubPage = () => {
   const [isMain, setIsMain] = useState<boolean>(true);
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const [invitations, setInvitations] = useState<Friend[]>([]);
+  const [friends, setFriends] = useState<FriendI[]>([]);
+  const [invitations, setInvitations] = useState<FriendI[]>([]);
 
-  const isMe = useAppSelector(selectIsMe);
-  const user = useAppSelector(selectUser);
+  const myId = useAppSelector(selectMyId)
 
-  const handleFetchFriends = async (user: OtherUserData | MyData) => {
+  const user = useAppSelector(selectUser)
+
+  const handleFetchFriends = async (id: string) => {
     try {
-      const { data } = await axios.get<Friend[]>(`/api/friends/${user.id}`);
+      const { data } = await axios.get<FriendI[]>(`/api/friends/${id}`);
       setFriends(data);
     } catch (error) {
       console.log(error);
@@ -37,7 +41,7 @@ const FriendsSubPage = () => {
 
   const handleFetchInvitations = async () => {
     try {
-      const { data } = await axios.get<Friend[]>(`/api/friends/invitations`);
+      const { data } = await axios.get<FriendI[]>(`/api/friends/invitations`);
       setInvitations(data);
     } catch (error) {
       console.log(error);
@@ -45,22 +49,22 @@ const FriendsSubPage = () => {
   };
 
   useEffect(() => {
-    handleFetchFriends(user);
-  }, [user]);
+      handleFetchFriends(user.id);
+  }, [isMain]);
 
   useEffect(() => {
     handleFetchInvitations();
-  }, []);
+  }, [isMain]);
 
   const handleSetMainCard = () => setIsMain(true);
 
   const handleSetInvitationsCard = () => setIsMain(false);
 
   return (
-    <Card customClass="flex flex-col gap-5">
+    <Card customClass="flex flex-col gap-5 w-[80%]">
       <SubPageHeader title="Znajomi" />
       <div className="flex gap-10">
-        {isMe && (
+        {user.id === myId && (
           <>
             <FriendsSubSelect
               isMain={isMain}
@@ -78,14 +82,14 @@ const FriendsSubPage = () => {
       {isMain && (
         <ul>
           {friends.map((friend) => (
-            <li key={friend.id}>{friend.firstName}</li>
+            <Friend key={friend.id} friend={friend}/>
           ))}
         </ul>
       )}
       {!isMain && (
         <ul>
           {invitations.map((friend) => (
-            <li key={friend.id}>{friend.firstName}</li>
+            <InvitingFriend key={friend.id} friend={friend}/>
           ))}
         </ul>
       )}

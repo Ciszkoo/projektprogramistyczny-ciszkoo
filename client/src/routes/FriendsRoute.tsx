@@ -1,8 +1,18 @@
 import React from "react";
-import FriendsSubPage from "../components/Friends/FreindsSubPage";
+import { useParams } from "react-router";
+import FriendsSubPage from "../components/Friends/FriendsSubPage";
+// import { useUser } from "./UserRoute";
 
 const FriendsRoute = () => {
-  return <FriendsSubPage />;
+  // const { isMe } = useUser();
+
+  const {id} = useParams();
+
+  return (
+    <>
+      <FriendsSubPage />
+    </>
+  );
 };
 
 export default FriendsRoute;

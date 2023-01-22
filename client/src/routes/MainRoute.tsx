@@ -20,7 +20,7 @@ const MainRoute = () => {
 
   return (
     <>
-      {loading && <p>Loading...</p>}
+      {loading && <p className="flex items-center justify-center h-full text-5xl">Loading...</p>}
       {!loading && (
         <>
           {!isAuth && (

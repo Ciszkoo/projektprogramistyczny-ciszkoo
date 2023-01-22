@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useAppDispatch } from "../../reducers/hooks";
-import { fetchMyData } from "../../reducers/userReducer";
+import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
+import { fetchUserData, selectMyId } from "../../reducers/userReducer";
 
 const EditFirstNameSchema = z.string().min(2).max(50);
 const EditLastNameSchema = z.string().min(2).max(50);
@@ -28,6 +28,8 @@ interface EditFormProps {
 const EditForm = (props: EditFormProps) => {
   const dispatch = useAppDispatch();
 
+  const id = useAppSelector(selectMyId)
+
   const schema = z.object({ value: schemas[props.propName] });
   type SchemaType = z.infer<typeof schema>;
 
@@ -44,7 +46,7 @@ const EditForm = (props: EditFormProps) => {
         data,
         { params: {prop: props.propName}}
       );
-      await dispatch(fetchMyData());
+      await dispatch(fetchUserData(id));
       console.log("Updated");
     } catch (error) {
       error instanceof Error && error.message

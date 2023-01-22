@@ -6,7 +6,7 @@ interface CardProps {
 
 const Card = (props: PropsWithChildren<CardProps>) => {
   return (
-    <div className={`w-[80%] bg-white rounded-xl p-5 shadow-lg ${props.customClass}`}>{props.children}</div>
+    <div className={`bg-white rounded-xl p-5 shadow-lg ${props.customClass}`}>{props.children}</div>
   );
 };
 

@@ -39,7 +39,8 @@ export const getMyselfHandler = async (req: Request, res: Response) => {
 
 // Logowanie użytkownika
 export const loginHandler = (_: Request, res: Response) => {
-  return res.status(200).send({ message: "Logged in" });
+  const id = res.req.session.passport?.user as string;
+  return res.status(200).send(id);
 };
 
 // Wylogowanie użytkownika
@@ -97,7 +98,7 @@ export const getUserHandler = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(401).send({ message: "Couldn't find user" });
   }
-  const relation = await getFriendshipStatus(id, myId);
+  const relation = myId === id ? "me" : await getFriendshipStatus(id, myId);
   if (!relation) {
     return res.status(500).send({ message: "Couldn't get user info" });
   }

@@ -8,8 +8,9 @@ import { isAuth } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.head("/sessioncheck", isAuth, (_, res) => {
-  res.sendStatus(200);
+router.get("/sessioncheck", isAuth, (req, res) => {
+  const id = req.session.passport?.user as string;
+  res.status(200).send(id);
 });
 
 router.use("/user", user);

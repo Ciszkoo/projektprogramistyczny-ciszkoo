@@ -84,22 +84,22 @@ export const unlikePostHandler = async (req: Request, res: Response) => {
 export const getMyPostsHandler = async (req: Request, res: Response) => {
   const id = req.session.passport?.user as string;
   const page = parseInt(req.params.page, 10);
-  const querry = await getMyPosts(id, page);
-  if (!querry) {
+  const query = await getMyPosts(id, page);
+  if (!query) {
     return res.status(500).send({ message: "Could not get posts" });
   }
-  return res.status(200).send({ posts: querry });
+  return res.status(200).send(query);
 };
 
 // Pobieranie wszystkich dostępnych postów
 export const getAllPostsHandler = async (req: Request, res: Response) => {
   const id = req.session.passport?.user as string;
   const page = parseInt(req.params.page, 10);
-  const querry = await getAllPosts(id, page);
-  if (!querry) {
+  const query = await getAllPosts(id, page);
+  if (!query) {
     return res.status(500).send({ message: "Could not get posts" });
   }
-  return res.status(200).send({ posts: querry });
+  return res.status(200).send(query);
 };
 
 // Pobieranie postów innego użytkownika
@@ -107,9 +107,9 @@ export const getPostsHandler = async (req: Request, res: Response) => {
   const myId = req.session.passport?.user as string;
   const id = req.params.id;
   const page = parseInt(req.params.page, 10);
-  const querry = await getOtherPosts(myId, id, page);
-  if (!querry) {
+  const query = id === myId ? await getMyPosts(id, page) :await getOtherPosts(myId, id, page);
+  if (!query) {
     return res.status(500).send({ message: "Could not get posts" });
   }
-  return res.status(200).send({ posts: querry });
+  return res.status(200).send(query);
 };

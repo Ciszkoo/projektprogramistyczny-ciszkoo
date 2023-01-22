@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 
 interface ButtonProps {
-  lightness: "0" | "100" | "200" | "300" | "400";
+  lightness: "0" | "100" | "200" | "300" | "400" | "500" | "600";
   circle: boolean;
   type?: "button" | "submit" | "reset";
   handleOnClick?: () => void;

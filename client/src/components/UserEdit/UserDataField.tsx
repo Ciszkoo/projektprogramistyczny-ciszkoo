@@ -3,7 +3,8 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
 import EditModal from "./EditModal";
 import { useAppSelector } from "../../reducers/hooks";
-import { selectIsMe } from "../../reducers/userReducer";
+import { selectMyId } from "../../reducers/userReducer";
+import { useParams } from "react-router";
 
 interface UserDataFieldProps {
   label: string;
@@ -14,7 +15,8 @@ interface UserDataFieldProps {
 const UserDataField = (props: UserDataFieldProps) => {
   const [showModal, setShowModal] = useState(false);
 
-  const isCurr = useAppSelector(selectIsMe);
+  const {id} = useParams()
+  const myId = useAppSelector(selectMyId);
 
   const openModalHandler = () => {
     setShowModal(true);
@@ -38,7 +40,7 @@ const UserDataField = (props: UserDataFieldProps) => {
       <p>
         {props.label}: {props.value}
       </p>
-      {isCurr && (
+      {id === myId && (
         <button onClick={openModalHandler}>
           <PencilSquareIcon className="w-6 h-6" />
         </button>

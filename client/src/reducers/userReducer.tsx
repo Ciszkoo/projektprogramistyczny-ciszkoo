@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../store";
-import { fetchCurrUserPosts, fetchUserPosts } from "./userPostsReducer";
+import { fetchUserPosts } from "./postsReducer";
 
-export interface MyData {
+export interface UserData {
   firstName: string;
   lastName: string;
   email: string;
@@ -11,35 +11,16 @@ export interface MyData {
   gender: string;
   id: string;
   avatar: string;
-}
-
-export interface OtherUserData extends MyData {
   friendship: Friendship;
 }
 
-type Friendship = "none" | "invited" | "invitation" | "friends";
+type Friendship = "none" | "invited" | "invitation" | "friends" | "me";
 
-interface FriendshipData {
-  friendship: Friendship;
-}
-
-export const fetchMyData = createAsyncThunk(
-  "user/fetchMyData",
-  async (_, thunkApi) => {
-    const res = await axios
-      .get<MyData>("/api/user")
-      .then((res) => res.data)
-      .catch((err) => thunkApi.rejectWithValue(err));
-    await thunkApi.dispatch(fetchCurrUserPosts(0));
-    return res;
-  }
-);
-
-export const fetchOtherUserData = createAsyncThunk(
-  "user/fetchOtherUserData",
+export const fetchUserData = createAsyncThunk(
+  "user/fetchUserData",
   async (id: string, thunkApi) => {
     const res = await axios
-      .get<OtherUserData>(`/api/user/${id}`)
+      .get<UserData>(`/api/user/${id}`)
       .then((res) => res.data)
       .catch((err) => thunkApi.rejectWithValue(err));
     await thunkApi.dispatch(fetchUserPosts({ id, page: 0 }));
@@ -47,34 +28,13 @@ export const fetchOtherUserData = createAsyncThunk(
   }
 );
 
-export const fetchFriendshipStatus = createAsyncThunk(
-  "user/fetchFrinedshipStatus",
-  async (id: string, thunkApi) => {
-    const res = await axios
-      .get<FriendshipData>(`/api/friends/friendship/${id}`)
-      .then((res) => res.data.friendship)
-      .catch((err) => thunkApi.rejectWithValue(err));
-    return res;
-  }
-);
-
 interface UserState {
-  me: MyData;
-  otherUser: OtherUserData;
-  isMe: boolean;
+  user: UserData;
+  myId: string;
 }
 
 const initialState: UserState = {
-  me: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    dateOfBirth: "",
-    gender: "",
-    id: "",
-    avatar: "",
-  },
-  otherUser: {
+  user: {
     firstName: "",
     lastName: "",
     email: "",
@@ -84,44 +44,28 @@ const initialState: UserState = {
     avatar: "",
     friendship: "none",
   },
-  isMe: true,
+  myId: "",
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setMe(state) {
-      state.isMe = true;
-    },
-    setOtherUser(state) {
-      state.isMe = false;
+    setMyId(state, action) {
+      state.myId = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchMyData.fulfilled, (state, action) => {
-      state.me = action.payload;
-    });
-    builder.addCase(fetchOtherUserData.fulfilled, (state, action) => {
-      state.otherUser = action.payload;
-    });
-    builder.addCase(fetchFriendshipStatus.fulfilled, (state, action) => {
-      state.otherUser.friendship = action.payload;
+    builder.addCase(fetchUserData.fulfilled, (state, action) => {
+      state.user = action.payload;
     });
   },
 });
 
-export const selectUserRoot = (state: RootState) => state.user;
+export const selectUser = (state: RootState) => state.user.user;
 
-export const selectMe = (state: RootState) => state.user.me;
+export const selectMyId = (state: RootState) => state.user.myId;
 
-export const selectOtherUser = (state: RootState) => state.user.otherUser;
-
-export const selectIsMe = (state: RootState) => state.user.isMe;
-
-export const selectUser = (state: RootState): OtherUserData | MyData =>
-  state.user.isMe ? state.user.me : state.user.otherUser;
-
-export const { setMe, setOtherUser } = userSlice.actions;
+export const { setMyId } = userSlice.actions;
 
 export default userSlice.reducer;

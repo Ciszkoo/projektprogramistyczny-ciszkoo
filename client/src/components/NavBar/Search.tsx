@@ -6,7 +6,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../reducers/hooks";
-import { fetchOtherUserData } from "../../reducers/userReducer";
+import { fetchUserData } from "../../reducers/userReducer";
 
 const SearchFormSchema = z.object({
   query: z.string().max(50),
@@ -33,25 +33,27 @@ const Search = () => {
     if (s.query.length === 0) return setSearchResult([]);
 
     try {
-      const { data } = await axios.get("/api/search", {params: {query: s.query}});
+      const { data } = await axios.get("/api/search", {
+        params: { query: s.query },
+      });
       setSearchResult(data);
     } catch (error) {
       console.error(error);
       setSearchResult([]);
     }
   };
-  const dispatch = useAppDispatch();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const search = watch("query");
 
   const navigate = useNavigate();
 
+  const dispatch = useAppDispatch();
+
   const searchResultClickHandler = (id: string) => async () => {
+    await dispatch(fetchUserData(id));
     reset();
-    await dispatch(fetchOtherUserData(id));
     navigate(`/user/${id}`);
-    return;
   };
 
   const blurHandler = () => {
