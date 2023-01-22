@@ -23,7 +23,7 @@ const Dashboard = () => {
         </p>
       )}
       {posts.map((post) => {
-        return <Post key={post.postId} post={post} whose="all" />;
+        return <Post key={post.postId} post={post} />;
       })}
     </ul>
   );

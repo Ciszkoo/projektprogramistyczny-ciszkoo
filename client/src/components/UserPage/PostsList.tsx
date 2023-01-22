@@ -8,9 +8,9 @@ interface PostsListProps {
 
 const PostsList = (props: PostsListProps) => {
   return (
-    <ul className="w-[80%]">
+    <ul className="w-full">
       {props.posts.map((s) => {
-        return <Post key={s.postId} post={s} whose={"other"} />;
+        return <Post key={s.postId} post={s} />;
       })}
     </ul>
   );

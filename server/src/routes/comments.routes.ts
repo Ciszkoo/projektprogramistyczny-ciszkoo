@@ -14,7 +14,7 @@ const router = Router();
 
 // Tworzenie komentarza
 router.post(
-  "/:id/create", // <--- :id is postId
+  "/:id", // <--- :id is postId
   isAuth,
   validateResource(createCommentSchema),
   createCommentHandler

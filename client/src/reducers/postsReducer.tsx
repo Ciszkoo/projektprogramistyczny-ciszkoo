@@ -10,7 +10,7 @@ export interface Post {
   postId: string;
   content: string;
   at: number;
-  privacy: string;
+  privacy: "public" | "friends" | "private";
   image: string; // TODO: display in Post component
   likes: number;
   liked: boolean;
