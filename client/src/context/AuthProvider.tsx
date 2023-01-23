@@ -6,10 +6,8 @@ import {
   useState,
   useEffect,
 } from "react";
-
 import { useAppDispatch } from "../reducers/hooks";
-import { fetchFriendsPosts } from "../reducers/postsReducer";
-import { fetchUserData, setMyId } from "../reducers/userReducer";
+import { setMyId } from "../reducers/userReducer";
 
 interface AuthContextI {
   isAuth: boolean;
@@ -49,8 +47,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       const { data } = await axios.get("/api/sessioncheck");
       dispatch(setMyId(data));
       setIsAuth(true);
-      await dispatch(fetchUserData(data));
-      await dispatch(fetchFriendsPosts(0));
     } catch (error) {
       setIsAuth(false);
     } finally {
@@ -63,8 +59,6 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       const { data } = await axios.post("/api/user/login", input);
       console.log("Udało się zalogować");
       dispatch(setMyId(data));
-      await dispatch(fetchUserData(data));
-      await dispatch(fetchFriendsPosts(0));
       setIsAuth(true);
     } catch (error) {
       console.log("Błąd logowania");

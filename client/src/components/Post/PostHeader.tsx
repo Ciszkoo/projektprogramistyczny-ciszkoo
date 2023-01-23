@@ -5,11 +5,12 @@ import {
   TrashIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
+import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router";
-import { useAppSelector } from "../../reducers/hooks";
+import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
+import { deletePost, refreshUserPost } from "../../reducers/postsReducer";
 import { selectMyId } from "../../reducers/userReducer";
-import DeletePostModal from "../Modal/DeletePostModal";
 import EditPostModal from "../Modal/EditPostModal";
 import { useModal } from "../Modal/Modal";
 
@@ -36,9 +37,35 @@ const PostHeader = (props: PostHeaderProps) => {
 
   const date = new Date(props.at).toISOString().split("T")[0];
 
-  const removeModal = useModal(<DeletePostModal postId={props.postId} />);
+  const { openModal, modalPortal } = useModal(
+    <EditPostModal postId={props.postId} content={props.content} />
+  );
+  const dispatch = useAppDispatch();
 
-  const editModal = useModal(<EditPostModal postId={props.postId} content={props.content} />);
+  const handleDeletePost = async () => {
+    try {
+      await axios.delete(`/api/posts/${props.postId}`);
+      dispatch(deletePost({ postId: props.postId }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangePrivacy = async () => {
+    if (props.userId !== myId) return;
+    const newPrivacy =
+      props.privacy === "public"
+        ? "friends"
+        : props.privacy === "friends"
+        ? "private"
+        : "public";
+    try {
+      await axios.put(`/api/posts/${props.postId}`, { privacy: newPrivacy });
+      dispatch(refreshUserPost(props.postId));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -59,33 +86,44 @@ const PostHeader = (props: PostHeaderProps) => {
         {props.userId === myId && props.isVisible && (
           <TrashIcon
             className="h-5 w-5 hover:cursor-pointer"
-            onClick={removeModal.openModal}
+            onClick={handleDeletePost}
           />
         )}
         {props.userId === myId && props.isVisible && (
           <PencilSquareIcon
             className="h-5 w-5 hover:cursor-pointer"
-            onClick={editModal.openModal}
+            onClick={openModal}
           />
         )}
         {props.privacy === "public" && (
-          <EyeIcon className="h-5 w-5 text-green-500" />
-        )}
-        {props.privacy === "private" && (
-          <EyeSlashIcon className="h-5 w-5 text-red-500" />
+          <EyeIcon
+            className={`h-5 w-5 text-green-500 ${
+              myId === props.userId && "hover:cursor-pointer"
+            }`}
+            onClick={handleChangePrivacy}
+          />
         )}
         {props.privacy === "friends" && (
-          <UsersIcon className="h-5 w-5 text-blue-500" />
+          <UsersIcon
+            className={`h-5 w-5 text-violet-500 ${
+              myId === props.userId && "hover:cursor-pointer"
+            }`}
+            onClick={handleChangePrivacy}
+          />
+        )}
+        {props.privacy === "private" && (
+          <EyeSlashIcon
+            className={`h-5 w-5 text-red-500 ${
+              myId === props.userId && "hover:cursor-pointer"
+            }`}
+            onClick={handleChangePrivacy}
+          />
         )}
         <p className="text-xs">{date}</p>
       </div>
-      {removeModal.modalPortal}
-      {editModal.modalPortal}
+      {modalPortal}
     </div>
   );
 };
 
 export default PostHeader;
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
-}

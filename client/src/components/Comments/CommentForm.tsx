@@ -5,9 +5,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
-import { fetchFriendsPosts, fetchUserPosts } from "../../reducers/postsReducer";
-import { selectUser } from "../../reducers/userReducer";
+import { useAppDispatch } from "../../reducers/hooks";
+import {
+  refreshFriendPost,
+  refreshUserPost,
+} from "../../reducers/postsReducer";
+import { useParams } from "react-router";
 
 const CommentSchema = z.object({
   content: z.string().min(1).max(250),
@@ -22,6 +25,8 @@ interface CommentFormProps {
 const CommentForm = (props: CommentFormProps) => {
   const [value, setValue] = useState<string>("");
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const { id } = useParams();
 
   useEffect(() => {
     if (textAreaRef.current) {
@@ -39,8 +44,6 @@ const CommentForm = (props: CommentFormProps) => {
 
   const dispatch = useAppDispatch();
 
-  const user = useAppSelector(selectUser);
-
   const { handleSubmit, register, reset } = useForm<CommentSchemaType>({
     resolver: zodResolver(CommentSchema),
   });
@@ -50,8 +53,9 @@ const CommentForm = (props: CommentFormProps) => {
       reset();
       setValue("");
       axios.post(`/api/comments/${props.postId}`, data);
-      dispatch(fetchFriendsPosts(0));
-      dispatch(fetchUserPosts({ id: user.id, page: 0 }));
+      typeof id === "undefined"
+        ? dispatch(refreshFriendPost(props.postId))
+        : dispatch(refreshUserPost(props.postId));
     } catch (error) {
       console.log(error);
     }

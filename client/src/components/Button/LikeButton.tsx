@@ -1,8 +1,12 @@
 import { HandThumbUpIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import React from "react";
+import { useParams } from "react-router";
 import { useAppDispatch } from "../../reducers/hooks";
-import { fetchFriendsPosts, fetchUserPosts } from "../../reducers/postsReducer";
+import {
+  refreshFriendPost,
+  refreshUserPost,
+} from "../../reducers/postsReducer";
 import Button from "./Button";
 
 interface LikeButtonProps {
@@ -13,13 +17,16 @@ interface LikeButtonProps {
 type UnlikeButtonProps = LikeButtonProps;
 
 export const LikeButton = (props: LikeButtonProps) => {
+  const { id } = useParams();
+
   const dispatch = useAppDispatch();
 
   const handleLike = async () => {
     try {
       await axios.put(`/api/posts/like/${props.postId}`);
-      dispatch(fetchUserPosts({ id: props.userId, page: 0 }));
-      dispatch(fetchFriendsPosts(0));
+      typeof id === "undefined"
+        ? dispatch(refreshFriendPost(props.postId))
+        : dispatch(refreshUserPost(props.postId));
     } catch (error) {
       console.log(error);
     }
@@ -39,13 +46,16 @@ export const LikeButton = (props: LikeButtonProps) => {
 };
 
 export const UnlikeButton = (props: UnlikeButtonProps) => {
+  const { id } = useParams();
+
   const dispatch = useAppDispatch();
 
   const handleUnlike = async () => {
     try {
       await axios.put(`/api/posts/unlike/${props.postId}`);
-      dispatch(fetchUserPosts({ id: props.userId, page: 0 }));
-      dispatch(fetchFriendsPosts(0));
+      typeof id === "undefined"
+        ? dispatch(refreshFriendPost(props.postId))
+        : dispatch(refreshUserPost(props.postId));
     } catch (error) {
       console.log(error);
     }

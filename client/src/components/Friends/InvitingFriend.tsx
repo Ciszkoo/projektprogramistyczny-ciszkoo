@@ -38,6 +38,7 @@ const InvitingFriend = (props: FriendProps) => {
         firstName={props.friend.firstName}
         lastName={props.friend.lastName}
         avatar={props.friend.avatar}
+        id={props.friend.id}
       />
       {isInvitation && (
         <div className="flex gap-2">

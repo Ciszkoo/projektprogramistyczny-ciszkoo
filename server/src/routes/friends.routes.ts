@@ -65,16 +65,9 @@ router.get(
   getInvitationsHandler
 );
 
-// Pobieranie znajomych
-router.get("", isAuth, validateResource(blankSchema), getFriendsHandler);
-
-// Pobieranie znajomych innego użytkownika
-router.get("/:id", isAuth, validateResource(blankSchema), getOtherUserFriendsHandler);
-
-
 // Pobieranie propozycji znajomych
 router.get(
-  "/proposals",
+  "/recomendations",
   isAuth,
   validateResource(blankSchema),
   getProposalsHandler
@@ -87,5 +80,14 @@ router.get(
   validateResource(blankSchema),
   getFriendshipStatusHandler
 );
+
+// Pobieranie znajomych
+router.get("", isAuth, validateResource(blankSchema), getFriendsHandler);
+
+// Pobieranie znajomych innego użytkownika
+router.get("/:id", isAuth, validateResource(blankSchema), getOtherUserFriendsHandler);
+
+
+
 
 export default router;

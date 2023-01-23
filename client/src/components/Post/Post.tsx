@@ -26,7 +26,7 @@ const Post = (props: PostProps) => {
 
   return (
     <Card customClass={`my-5 mt-0`} onHover={handleHoverMyPost} onBlur={handleBlurMyPost}>
-      <li>
+      <div>
         <PostHeader
           userId={props.post.userId}
           avatar={props.post.avatar}
@@ -51,7 +51,7 @@ const Post = (props: PostProps) => {
           <p>{props.post.likes} użytkowników lubi to!</p>
         </div>
         <Comments comments={props.post.comments} postId={props.post.postId} />
-      </li>
+      </div>
     </Card>
   );
 };

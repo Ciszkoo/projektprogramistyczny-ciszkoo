@@ -1,31 +1,52 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
-import { fetchFriendsPosts, selectFriendsPosts } from "../../reducers/postsReducer";
+import {
+  fetchMoreFriendsPosts,
+  selectFriendsPosts,
+  selectFriendsPostsCount,
+} from "../../reducers/postsReducer";
+import Card from "../Card/Card";
 import Post from "../Post/Post";
 
 const Dashboard = () => {
+  const [page, setPage] = useState<number>(1);
+
   const posts = useAppSelector(selectFriendsPosts);
 
   const isThereAnyPosts = posts.length > 0;
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchFriendsPosts(0))
-  // eslint-disable-next-line
-  }, [])
+  const count = useAppSelector(selectFriendsPostsCount);
+
+  const loadMorePosts = async () => {
+    await dispatch(fetchMoreFriendsPosts(page));
+    setPage(() => page + 1);
+  };
 
   return (
-    <ul>
+    <>
       {!isThereAnyPosts && (
-        <p className="text-2xl">
-          Twoi znajomi albo są nudni albo ich nie masz. Przykro nam.
-        </p>
+        <Card customClass="flex justify-center">
+          <p>Loading...</p>
+        </Card>
       )}
-      {posts.map((post) => {
-        return <Post key={post.postId} post={post}/>;
-      })}
-    </ul>
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={loadMorePosts}
+        hasMore={posts.length < count - 1}
+        loader={
+          <Card customClass="flex justify-center">
+            <p>Loading...</p>
+          </Card>
+        }
+      >
+        {posts.map((post) => {
+          return <Post key={post.postId} post={post} />;
+        })}
+      </InfiniteScroll>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Dashboard from "../components/Dashboard/Dashboard";
-
+import { Navigate } from "react-router";
+import Card from "../components/Card/Card";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 import { useAuth } from "../context/AuthProvider";
@@ -20,7 +20,11 @@ const MainRoute = () => {
 
   return (
     <>
-      {loading && <p className="flex items-center justify-center h-full text-5xl">Loading...</p>}
+      {loading && (
+        <Card customClass="flex justify-center">
+          <p>Loading...</p>
+        </Card>
+      )}
       {!loading && (
         <>
           {!isAuth && (
@@ -29,7 +33,12 @@ const MainRoute = () => {
               {isRegister && <RegisterForm setIsRegister={handleCloseSignUp} />}
             </>
           )}
-          {isAuth && <Dashboard />}
+          {isAuth && <Navigate to="/dashboard" replace />}
+          {isAuth && (
+            <Card customClass="flex justify-center">
+              <p>Loading...</p>
+            </Card>
+          )}
         </>
       )}
     </>

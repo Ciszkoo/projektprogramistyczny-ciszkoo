@@ -18,9 +18,8 @@ const UserInfoPage = () => {
       await axios.delete("/api/user");
       console.log("Deleted");
     } catch (error) {
-      error instanceof Error && error.message
-        ? console.log(error.message)
-        : console.log(error);
+      console.log(error);
+
     }
   };
 

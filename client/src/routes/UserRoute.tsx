@@ -1,4 +1,5 @@
 import React from "react";
+import Card from "../components/Card/Card";
 import UserPage from "../components/UserPage/UserPage";
 import { useAppSelector } from "../reducers/hooks";
 import { selectUserFetchStatus } from "../reducers/userReducer";
@@ -17,7 +18,7 @@ export interface UserData {
 const UserRoute = () => {
   const status = useAppSelector(selectUserFetchStatus);
 
-  return status === "idle" ? <UserPage /> : <div>Loading...</div>;
+  return status === "idle" ? <UserPage /> : <Card customClass="flex justify-center"><p>Loading...</p></Card>;
 };
 
 export default UserRoute;

@@ -177,7 +177,6 @@ export const getProposals = async (id: string) => {
         avatar: user.avatar,
       };
     });
-    log.info(friends);
     return friends;
   } catch (error) {
     log.error(error);

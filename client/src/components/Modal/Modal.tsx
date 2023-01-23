@@ -1,7 +1,6 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { useAppDispatch } from "../../reducers/hooks";
 import Button from "../Button/Button";
 
 interface ModalProps {

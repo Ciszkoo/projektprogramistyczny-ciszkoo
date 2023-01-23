@@ -33,6 +33,7 @@ const Friend = (props: FriendProps) => {
         firstName={props.friend.firstName}
         lastName={props.friend.lastName}
         avatar={props.friend.avatar}
+        id={props.friend.id}
       />
       {isFriend && myId === user.id && (
         <Button

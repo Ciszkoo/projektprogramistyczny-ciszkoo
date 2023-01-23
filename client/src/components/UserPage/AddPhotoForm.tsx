@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
 import { fetchUserData, selectMyId } from "../../reducers/userReducer";
 import uploadcareClient from "../../utils/uploadcareClient";
+import Button from "../Button/Button";
 
 type Input = {
   image: FileList;
@@ -31,7 +32,6 @@ const AddPhotoForm = () => {
 
   const onSubmit = async (input: Input) => {
     const image = input.image[0];
-    console.log(input.image[0]);
     if (
       image.type !== "image/png" &&
       image.type !== "image/jpeg" &&
@@ -47,8 +47,11 @@ const AddPhotoForm = () => {
       .catch((err) => console.log(err));
 
     if (!upload) return;
-    console.log(upload);
-    const res = await axios.patch("/api/user", { value: `https://ucarecdn.com/${upload}/` }, { params: { prop: "avatar" } });
+    const res = await axios.patch(
+      "/api/user",
+      { value: `https://ucarecdn.com/${upload}/` },
+      { params: { prop: "avatar" } }
+    );
     if (res.status !== 200) return;
     await dispatch(fetchUserData(id));
     console.log("Uploaded!");
@@ -66,9 +69,14 @@ const AddPhotoForm = () => {
         accept="image/jpg, image/jpeg, image/png"
         {...register("image")}
       />
-      <button className="bg-violet-200 w-fit self-center p-2 rounded-full">
+      <Button
+        type="submit"
+        lightness="200"
+        circle={false}
+        customClass="self-center"
+      >
         Dodaj zdjęcie profilowe
-      </button>
+      </Button>
     </form>
   );
 };

@@ -1,12 +1,11 @@
-import { Outlet, useLoaderData, useRouteLoaderData } from "react-router";
-import AuthProvider from "../context/AuthProvider";
+import { Outlet } from "react-router";
 import NavBar from "./NavBar/NavBar";
 import ScrollToTop from "./ScrollToTop";
 
 const AuthProviderLayout = () => {
   return (
     <>
-    <ScrollToTop />
+      <ScrollToTop />
       <NavBar />
       <div className="flex-auto bg-violet-100 flex">
         <div className="w-[60%] flex flex-col mx-auto py-5">

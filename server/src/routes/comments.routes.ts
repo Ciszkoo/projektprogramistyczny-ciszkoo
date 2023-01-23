@@ -21,11 +21,11 @@ router.post(
 );
 
 // Usuwanie komentarza
-router.delete("/delete/:id", isAuth, deleteCommentHandler); // <--- :id is commentId
+router.delete("/:id", isAuth, deleteCommentHandler); // <--- :id is commentId
 
 // Edycja komentarza
 router.put(
-  "/edit/:id",
+  "/:id",
   isAuth,
   validateResource(createCommentSchema),
   editCommentHandler

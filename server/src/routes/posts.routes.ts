@@ -5,6 +5,7 @@ import {
   editPostHandler,
   getAllPostsHandler,
   getMyPostsHandler,
+  getPostHandler,
   getPostsHandler,
   likePostHandler,
   unlikePostHandler,
@@ -40,6 +41,9 @@ router.get("/my/:page", isAuth, getMyPostsHandler);
 
 // Pobieranie wszystkich dostępnych postów
 router.get("/all/:page", isAuth, getAllPostsHandler);
+
+// Pobieranie posta
+router.get("/single/:id", isAuth, getPostHandler);
 
 // Pobranie postów innego użytkownika
 router.get("/:id/:page", isAuth, getPostsHandler);

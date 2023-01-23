@@ -3,20 +3,27 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
 import {
   Comment as CommentType,
-  fetchFriendsPosts,
-  fetchUserPosts,
+  refreshFriendPost,
+  refreshUserPost,
 } from "../../reducers/postsReducer";
-import { selectMyId, selectUser } from "../../reducers/userReducer";
+import { selectMyId } from "../../reducers/userReducer";
 import Button from "../Button/Button";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import Card from "../Card/Card";
+import { useModal } from "../Modal/Modal";
+import EditCommentModal from "./EditCommentModal";
 
 interface CommentProps {
   comment: CommentType;
+  postId: string;
 }
 
 const Comment = (props: CommentProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMenu, setIsMenu] = useState(false);
+
+  const { id } = useParams();
 
   const myId = useAppSelector(selectMyId);
 
@@ -32,15 +39,14 @@ const Comment = (props: CommentProps) => {
 
   const dispatch = useAppDispatch();
 
-  const user = useAppSelector(selectUser);
-
   const handleLike = async () => {
     try {
       props.comment.liked
         ? await axios.put(`/api/comments/unlike/${props.comment.id}`)
         : await axios.put(`/api/comments/like/${props.comment.id}`);
-      await dispatch(fetchFriendsPosts(0));
-      await dispatch(fetchUserPosts({ id: user.id, page: 0 }));
+      typeof id === "undefined"
+        ? dispatch(refreshFriendPost(props.postId))
+        : dispatch(refreshUserPost(props.postId));
     } catch (error) {}
   };
 
@@ -49,6 +55,30 @@ const Comment = (props: CommentProps) => {
   const handleNavigateToProfile = async () => {
     navigate(`/user/${props.comment.userId}`);
   };
+
+  const handleShowMenu = () => {
+    setIsMenu(() => !isMenu);
+  };
+
+  const handleDeleteComment = async () => {
+    setIsMenu(false);
+    try {
+      await axios.delete(`/api/comments/${props.comment.id}`);
+      typeof id === "undefined"
+        ? dispatch(refreshFriendPost(props.postId))
+        : dispatch(refreshUserPost(props.postId));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { openModal, modalPortal } = useModal(
+    <EditCommentModal
+      commentId={props.comment.id}
+      content={props.comment.content}
+      postId={props.postId}
+    />
+  );
 
   return (
     <li
@@ -92,10 +122,31 @@ const Comment = (props: CommentProps) => {
       <Button
         lightness="0"
         circle={true}
-        customClass={`flex-init ${isVisible ? "visible" : "invisible"}`}
+        customClass={`flex-init relative ${
+          isVisible ? "visible" : "invisible"
+        }`}
+        handleOnClick={handleShowMenu}
       >
-        <EllipsisHorizontalIcon className="w-5 h-5" />
+        {!isMenu && <EllipsisHorizontalIcon className="w-5 h-5" />}
+        {isMenu && (
+          <Card onBlur={handleShowMenu} customClass={"absolute top-0 left-0"}>
+            <div
+              className="hover:bg-violet-50 rounded-xl p-2"
+              onClick={handleDeleteComment}
+            >
+              Usuń
+            </div>
+            <div
+              className="hover:bg-violet-50 rounded-xl p-2"
+              onClick={openModal}
+            >
+              {" "}
+              Edytuj
+            </div>{" "}
+          </Card>
+        )}
       </Button>
+      {modalPortal}
     </li>
   );
 };

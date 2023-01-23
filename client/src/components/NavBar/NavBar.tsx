@@ -19,7 +19,7 @@ const NavBar = () => {
   };
 
   const handleHome = () => {
-    navigate(`/`);
+    navigate(`/dashboard`);
   };
 
   return (
@@ -28,7 +28,7 @@ const NavBar = () => {
         <div className="flex">
           <Button
             circle={true}
-            lightness="400"
+            lightness="300"
             customClass="ml-2"
             handleOnClick={handleHome}
           >
@@ -49,7 +49,7 @@ const NavBar = () => {
           </Button>
           <Button
             circle={false}
-            lightness="400"
+            lightness="300"
             customClass="mr-2"
             handleOnClick={handleLogout}
           >

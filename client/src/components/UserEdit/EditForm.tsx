@@ -45,11 +45,8 @@ const EditForm = (props: EditFormProps) => {
         params: { prop: props.propName },
       });
       await dispatch(fetchUserData(id));
-      console.log("Updated");
     } catch (error) {
-      error instanceof Error && error.message
-        ? console.log(error.message)
-        : console.log(error);
+      console.log(error);
     }
   };
 

@@ -7,6 +7,7 @@ import SubPageHeader from "../SubPage/SubPageHeader";
 import Friend from "./Friend";
 import FriendsSubSelect from "./FriendsSubSelect";
 import InvitingFriend from "./InvitingFriend";
+import RecommendedUser from "./RecommendedUser";
 
 export interface FriendI {
   id: string;
@@ -19,6 +20,7 @@ const FriendsSubPage = () => {
   const [isMain, setIsMain] = useState<boolean>(true);
   const [friends, setFriends] = useState<FriendI[]>([]);
   const [invitations, setInvitations] = useState<FriendI[]>([]);
+  const [recomendations, setRecomendations] = useState<FriendI[]>([]);
 
   const myId = useAppSelector(selectMyId);
 
@@ -42,6 +44,17 @@ const FriendsSubPage = () => {
     }
   };
 
+  const handleFetchRecomendations = async () => {
+    try {
+      const { data } = await axios.get<FriendI[]>(
+        `/api/friends/recomendations`
+      );
+      setRecomendations(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handleFetchFriends(user.id);
     // eslint-disable-next-line
@@ -49,6 +62,7 @@ const FriendsSubPage = () => {
 
   useEffect(() => {
     handleFetchInvitations();
+    handleFetchRecomendations();
   }, [isMain]);
 
   const handleSetMainCard = () => setIsMain(true);
@@ -82,11 +96,19 @@ const FriendsSubPage = () => {
         </ul>
       )}
       {!isMain && (
-        <ul>
-          {invitations.map((friend) => (
-            <InvitingFriend key={friend.id} friend={friend} />
-          ))}
-        </ul>
+        <>
+          <ul>
+            {invitations.map((friend) => (
+              <InvitingFriend key={friend.id} friend={friend} />
+            ))}
+          </ul>
+          <ul>
+            {recomendations.length > 0 && <h2>Proponowani znajomi</h2>}
+            {recomendations.map((user) => (
+              <RecommendedUser key={user.id} user={user} />
+            ))}
+          </ul>
+        </>
       )}
     </Card>
   );

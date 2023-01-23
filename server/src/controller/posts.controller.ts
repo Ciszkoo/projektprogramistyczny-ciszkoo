@@ -5,8 +5,12 @@ import {
   deletePost,
   editPost,
   getAllPosts,
+  getFriendsPostsCount,
   getMyPosts,
   getOtherPosts,
+  getOtherPostsCount,
+  getPost,
+  getUserPostsCount,
   likePost,
   unlikePost,
 } from "../service/posts.service";
@@ -45,10 +49,7 @@ export const editPostHandler = async (
   const body = req.body;
   const content = typeof body.content !== "undefined" ? body.content : null;
   const privacy = typeof body.privacy !== "undefined" ? body.privacy : null;
-  const image =
-    typeof body.image !== "undefined"
-      ? `${body.image}`
-      : null;
+  const image = typeof body.image !== "undefined" ? `${body.image}` : null;
   const postId = req.params.id;
   const id = req.session.passport?.user as string;
   const querry = await editPost(id, postId, content, privacy, image);
@@ -99,7 +100,8 @@ export const getAllPostsHandler = async (req: Request, res: Response) => {
   if (!query) {
     return res.status(500).send({ message: "Could not get posts" });
   }
-  return res.status(200).send(query);
+  const count = await getFriendsPostsCount(id);
+  return res.status(200).send({ posts: query, count: count });
 };
 
 // Pobieranie postów innego użytkownika
@@ -107,9 +109,24 @@ export const getPostsHandler = async (req: Request, res: Response) => {
   const myId = req.session.passport?.user as string;
   const id = req.params.id;
   const page = parseInt(req.params.page, 10);
-  const query = id === myId ? await getMyPosts(id, page) :await getOtherPosts(myId, id, page);
+  const query =
+    id === myId
+      ? await getMyPosts(id, page)
+      : await getOtherPosts(myId, id, page);
   if (!query) {
     return res.status(500).send({ message: "Could not get posts" });
+  }
+  const count = id === myId ? await getUserPostsCount(id) : getOtherPostsCount(myId, id)
+  return res.status(200).send({posts: query, count: count});
+};
+
+// Pobieranie posta
+export const getPostHandler = async (req: Request, res: Response) => {
+  const myId = req.session.passport?.user as string;
+  const id = req.params.id;
+  const query = await getPost(id, myId);
+  if (!query) {
+    return res.status(500).send({ message: "Could not get post" });
   }
   return res.status(200).send(query);
 };

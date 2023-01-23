@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 interface RegisterFormProps {
   setIsRegister: () => void;
@@ -32,10 +32,6 @@ const RegisterForm = (props: RegisterFormProps) => {
       console.log("Account created");
       props.setIsRegister();
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.response?.data);
-        return;
-      }
       console.log(error);
     }
   };

@@ -8,6 +8,8 @@ import UserInfoRoute from "./routes/UserInfoRoute";
 import UserRoute from "./routes/UserRoute";
 import { store } from "./store";
 import { fetchUserData } from "./reducers/userReducer";
+import Dashboard from "./components/Dashboard/Dashboard";
+import { fetchFriendsPosts } from "./reducers/postsReducer";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +18,18 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <MainRoute />,
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+        loader: async () => {
+          await store.dispatch(fetchFriendsPosts(0));
+          return null;
+        },
       },
       {
         path: "/user/:id",

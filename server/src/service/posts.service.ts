@@ -276,3 +276,89 @@ export const getOtherPosts = async (
     await session.close();
   }
 };
+
+// Pobieranie ilości postów
+export const getFriendsPostsCount = async (id: string) => {
+  const session = driver.session();
+  try {
+    const querryResult = await session.run(
+      "MATCH (u:User {id: $id})-[:FRIENDS]->(f:User)-[:POSTED]->(p:Post) RETURN count(p)",
+      { id }
+    );
+    return querryResult.records[0].get("count(p)");
+  } catch (error) {
+    return 0;
+  } finally {
+    await session.close();
+  }
+};
+
+// Pobieranie ilości postów użytkownika
+export const getUserPostsCount = async (id: string) => {
+  const session = driver.session();
+  try {
+    const querryResult = await session.run(
+      "MATCH (u:User {id: $id})-[:POSTED]->(p:Post) RETURN count(p)",
+      { id }
+    );
+    return querryResult.records[0].get("count(p)");
+  } catch (error) {
+    return 0;
+  } finally {
+    await session.close();
+  }
+}
+
+// Pobieranie ilości postów innego użytkownika
+export const getOtherPostsCount = async (id: string, otherId: string) => {
+  const privacy =
+    (await getFriendshipStatus(id, otherId)) === "friends"
+      ? "friends"
+      : "public";
+  const publicPriv = "public";
+  const session = driver.session();
+  try {
+    const querryResult = await session.run("MATCH (u:User {id: $otherId})-[:POSTED]->(p:Post) WHERE p.privacy=$privacy OR p.privacy=$publicPriv RETURN count(p)", { otherId, privacy, publicPriv });
+    return querryResult.records[0].get("count(p)");
+  } catch (error) {
+    return 0;
+  }
+}
+
+// Pobieranie posta
+export const getPost = async (postId: string, myId: string) => {
+  const session = driver.session();
+  try {
+    const querryResult = await session.run(
+      "MATCH (f:User)-[:POSTED]->(p:Post {id: $postId}) RETURN f, p",
+      { postId }
+    );
+    if (!querryResult.records[0]) {
+      return null;
+    }
+    const user = querryResult.records[0].get("f").properties;
+    const post = querryResult.records[0].get("p").properties;
+    const likes = await getPostLikes(post.id);
+    const comments = await getComments(postId, myId);
+    const liked = await checkIfLiked(myId, postId);
+    const response = {
+      userId: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatar: user.avatar,
+      postId: post.id,
+      content: post.content,
+      at: post.at,
+      privacy: post.privacy,
+      image: post.image,
+      likes: likes,
+      liked: liked,
+      comments: comments,
+    };
+    return response;
+  } catch (error) {
+    return null;
+  } finally {
+    await session.close();
+  }
+};

@@ -10,6 +10,7 @@ import {
   remove,
 } from "../service/friends.service";
 import { getFriendshipStatus } from "../service/user.service";
+import log from "../utils/logger";
 
 // Wysyłanie zaproszenia do znajomych
 export const inviteHandler = async (req: Request, res: Response) => {
@@ -115,7 +116,7 @@ export const getProposalsHandler = async (req: Request, res: Response) => {
   if (!result) {
     return res.status(404).send({ message: "Could not get proposals" });
   }
-  return res.status(200).send({ proposals: result });
+  return res.status(200).send(result);
 };
 
 // Pobieranie statusu znajomości

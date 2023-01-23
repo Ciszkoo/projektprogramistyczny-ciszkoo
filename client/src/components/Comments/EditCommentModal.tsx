@@ -11,17 +11,18 @@ import {
 } from "../../reducers/postsReducer";
 import Button from "../Button/Button";
 
-interface EditPostModalProps {
-  postId: string;
+interface EditCommentModalProps {
+  commentId: string;
   content: string;
+  postId: string;
 }
-const PostSchema = z.object({
-  content: z.string().min(1).max(500),
+const CommentSchema = z.object({
+  content: z.string().min(1).max(250),
 });
 
-type PostSchemaType = z.infer<typeof PostSchema>;
+type CommentSchemaType = z.infer<typeof CommentSchema>;
 
-const EditPostModal = (props: EditPostModalProps) => {
+const EditCommentModal = (props: EditCommentModalProps) => {
   const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const { id } = useParams();
@@ -30,16 +31,16 @@ const EditPostModal = (props: EditPostModalProps) => {
     handleSubmit,
     register,
     formState: { isSubmitting, isSubmitted },
-  } = useForm<PostSchemaType>({
-    resolver: zodResolver(PostSchema),
+  } = useForm<CommentSchemaType>({
+    resolver: zodResolver(CommentSchema),
     defaultValues: { content: props.content },
   });
 
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<PostSchemaType> = async (data) => {
+  const onSubmit: SubmitHandler<CommentSchemaType> = async (data) => {
     try {
-      await axios.put(`/api/posts/${props.postId}`, data);
+      await axios.put(`/api/comments/${props.commentId}`, data);
       typeof id === "undefined"
         ? dispatch(refreshFriendPost(props.postId))
         : dispatch(refreshUserPost(props.postId));
@@ -51,17 +52,17 @@ const EditPostModal = (props: EditPostModalProps) => {
 
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-      <p>Edytuj post:</p>
+      <p>Edytuj komentarz:</p>
       <textarea
         cols={50}
-        rows={10}
-        maxLength={500}
+        rows={5}
+        maxLength={250}
         className="resize-none bg-violet-50 rounded-xl p-2 focus:outline-none"
         spellCheck={false}
         disabled={isSubmitting || isSubmitted}
         {...register("content")}
       ></textarea>
-      {isEdited && <p className="self-center">Post został edytowany</p>}
+      {isEdited && <p className="self-center">Komentarz został edytowany</p>}
       {!isEdited && (
         <Button type="submit" lightness="200" circle={false}>
           Edytuj
@@ -71,4 +72,4 @@ const EditPostModal = (props: EditPostModalProps) => {
   );
 };
 
-export default EditPostModal;
+export default EditCommentModal;

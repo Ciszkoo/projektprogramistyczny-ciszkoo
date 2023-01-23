@@ -14,7 +14,7 @@ export const createComment = async (
       "MATCH (u:User {id: $userId}), (p:Post {id: $postId}) CREATE (u)-[:COMMENTED]->(c:Comment {id: apoc.create.uuid(), content: $content, at: apoc.date.currentTimestamp()})-[:ON]->(p) RETURN c",
       { userId, postId, content }
     );
-    if (result.summary.counters.containsUpdates()){
+    if (result.summary.counters.containsUpdates()) {
       return true;
     }
     return false;
