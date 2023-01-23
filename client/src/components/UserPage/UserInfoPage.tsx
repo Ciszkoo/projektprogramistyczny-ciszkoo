@@ -19,7 +19,6 @@ const UserInfoPage = () => {
       console.log("Deleted");
     } catch (error) {
       console.log(error);
-
     }
   };
 

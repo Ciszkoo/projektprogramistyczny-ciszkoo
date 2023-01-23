@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import AuthProviderLayout from "./components/AuthProviderLayout";
-import UserTimeline from "./components/UserPage/UserTimeline";
+import Layout from "./routes/Layout";
 import FriendsRoute from "./routes/FriendsRoute";
 import MainRoute from "./routes/MainRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -10,10 +9,11 @@ import { store } from "./store";
 import { fetchUserData } from "./reducers/userReducer";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { fetchFriendsPosts } from "./reducers/postsReducer";
+import UserTimelineRoute from "./routes/UserTimelineRoute";
 
 export const router = createBrowserRouter([
   {
-    element: <AuthProviderLayout />,
+    element: <Layout />,
     children: [
       {
         path: "/",
@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <UserTimeline />,
+            element: <UserTimelineRoute />,
           },
           {
             path: "details",

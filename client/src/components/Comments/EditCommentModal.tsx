@@ -24,8 +24,8 @@ type CommentSchemaType = z.infer<typeof CommentSchema>;
 
 const EditCommentModal = (props: EditCommentModalProps) => {
   const [isEdited, setIsEdited] = useState<boolean>(false);
-
   const { id } = useParams();
+  const dispatch = useAppDispatch();
 
   const {
     handleSubmit,
@@ -35,8 +35,6 @@ const EditCommentModal = (props: EditCommentModalProps) => {
     resolver: zodResolver(CommentSchema),
     defaultValues: { content: props.content },
   });
-
-  const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<CommentSchemaType> = async (data) => {
     try {

@@ -57,13 +57,9 @@ const FriendsSubPage = () => {
 
   useEffect(() => {
     handleFetchFriends(user.id);
-    // eslint-disable-next-line
-  }, [isMain]);
-
-  useEffect(() => {
     handleFetchInvitations();
     handleFetchRecomendations();
-  }, [isMain]);
+  }, [isMain, user.id]);
 
   const handleSetMainCard = () => setIsMain(true);
 
@@ -75,16 +71,15 @@ const FriendsSubPage = () => {
       <div className="flex gap-10">
         {user.id === myId && (
           <>
-            <FriendsSubSelect
-              isMain={isMain}
-              handler={handleSetMainCard}
-              filling="Lista znajomych"
-            />
+            <FriendsSubSelect isMain={isMain} handler={handleSetMainCard}>
+              Lista znajomych
+            </FriendsSubSelect>
             <FriendsSubSelect
               isMain={!isMain}
               handler={handleSetInvitationsCard}
-              filling="Zaproszenia do znajomych"
-            />
+            >
+              Zaproszenia do znajomych
+            </FriendsSubSelect>
           </>
         )}
       </div>

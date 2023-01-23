@@ -22,10 +22,10 @@ interface CommentProps {
 const Comment = (props: CommentProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMenu, setIsMenu] = useState(false);
-
   const { id } = useParams();
-
   const myId = useAppSelector(selectMyId);
+  const data = new Date(props.comment.at).toISOString().split("T")[0];
+  const dispatch = useAppDispatch();
 
   const handleHoverMyComment = () => {
     myId === props.comment.userId && setIsVisible(true);
@@ -34,10 +34,6 @@ const Comment = (props: CommentProps) => {
   const handleBlurMyComment = () => {
     setIsVisible(false);
   };
-
-  const data = new Date(props.comment.at).toISOString().split("T")[0];
-
-  const dispatch = useAppDispatch();
 
   const handleLike = async () => {
     try {

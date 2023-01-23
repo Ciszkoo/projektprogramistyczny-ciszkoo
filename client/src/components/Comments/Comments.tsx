@@ -22,7 +22,7 @@ const Comments = (props: CommentsProps) => {
       {showAllComments ? (
         <ul className="flex flex-col gap-2">
           {props.comments.map((comment) => (
-            <Comment key={comment.id} comment={comment} postId={props.postId}/>
+            <Comment key={comment.id} comment={comment} postId={props.postId} />
           ))}
         </ul>
       ) : (

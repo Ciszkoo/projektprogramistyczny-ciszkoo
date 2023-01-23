@@ -11,13 +11,9 @@ import Post from "../Post/Post";
 
 const Dashboard = () => {
   const [page, setPage] = useState<number>(1);
-
   const posts = useAppSelector(selectFriendsPosts);
-
   const isThereAnyPosts = posts.length > 0;
-
   const dispatch = useAppDispatch();
-
   const count = useAppSelector(selectFriendsPostsCount);
 
   const loadMorePosts = async () => {

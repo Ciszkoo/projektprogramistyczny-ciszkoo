@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useAppSelector } from "../../reducers/hooks";
 import { selectMyId, selectUser } from "../../reducers/userReducer";
-// import { useUser } from "../../routes/UserRoute";
 import Button from "../Button/Button";
 import FriendLabel from "./FriendLabel";
 import { FriendI } from "./FriendsSubPage";
@@ -13,10 +12,8 @@ interface FriendProps {
 
 const Friend = (props: FriendProps) => {
   const [isFriend, setIsFriend] = useState<boolean>(true);
-
-  const myId = useAppSelector(selectMyId)
-
-  const user = useAppSelector(selectUser)
+  const myId = useAppSelector(selectMyId);
+  const user = useAppSelector(selectUser);
 
   const handleRemoveFriend = async () => {
     try {

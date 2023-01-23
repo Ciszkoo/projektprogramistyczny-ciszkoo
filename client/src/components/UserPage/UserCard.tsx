@@ -7,7 +7,7 @@ import { selectUser } from "../../reducers/userReducer";
 import AddPhotoButton from "./AddPhotoButton";
 
 const UserCard = () => {
-  const user = useAppSelector(selectUser)
+  const user = useAppSelector(selectUser);
 
   return (
     <div className="flex flex-initial items-center p-5 rounded-xl bg-white mb-5 gap-4 shadow-lg">

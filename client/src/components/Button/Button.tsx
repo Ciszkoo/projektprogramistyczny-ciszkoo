@@ -6,11 +6,13 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   handleOnClick?: () => void;
   customClass?: string;
+  disabled?: boolean;
 }
 
 const Button = (props: PropsWithChildren<ButtonProps>) => {
   return (
     <button
+      disabled={props.disabled}
       type={props.type}
       onClick={props.handleOnClick}
       className={`flex justify-center items-center rounded-full h-10 ${

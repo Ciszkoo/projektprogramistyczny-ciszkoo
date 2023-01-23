@@ -9,14 +9,17 @@ interface FriendLabelProps {
 }
 
 const FriendLabel = (props: FriendLabelProps) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate(`/user/${props.id}`)
-  }
+    navigate(`/user/${props.id}`);
+  };
 
   return (
-    <div className="flex items-center gap-5 hover:cursor-pointer" onClick={handleNavigation}>
+    <div
+      className="flex items-center gap-5 hover:cursor-pointer"
+      onClick={handleNavigation}
+    >
       <img
         src={`${props.avatar}/-/scale_crop/100x100/`}
         className="rounded-full"

@@ -11,7 +11,13 @@ type Input = {
 };
 
 const AddPhotoForm = () => {
-  const { register, handleSubmit, reset, watch } = useForm<Input>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<Input>();
   const [img, setImg] = useState<ArrayBuffer>();
   const image = watch("image");
 
@@ -68,6 +74,7 @@ const AddPhotoForm = () => {
       file:bg-violet-50 file:text-violet-700"
         accept="image/jpg, image/jpeg, image/png"
         {...register("image")}
+        disabled={isSubmitting}
       />
       <Button
         type="submit"

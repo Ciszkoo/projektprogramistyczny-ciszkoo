@@ -1,8 +1,8 @@
 import { Outlet } from "react-router";
-import NavBar from "./NavBar/NavBar";
-import ScrollToTop from "./ScrollToTop";
+import NavBar from "../components/NavBar/NavBar";
+import ScrollToTop from "../components/ScrollToTop";
 
-const AuthProviderLayout = () => {
+const Layout = () => {
   return (
     <>
       <ScrollToTop />
@@ -16,4 +16,4 @@ const AuthProviderLayout = () => {
   );
 };
 
-export default AuthProviderLayout;
+export default Layout;

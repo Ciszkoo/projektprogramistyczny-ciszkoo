@@ -25,8 +25,8 @@ interface CommentFormProps {
 const CommentForm = (props: CommentFormProps) => {
   const [value, setValue] = useState<string>("");
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-
   const { id } = useParams();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (textAreaRef.current) {
@@ -41,8 +41,6 @@ const CommentForm = (props: CommentFormProps) => {
     onChange(e);
     setValue(val);
   };
-
-  const dispatch = useAppDispatch();
 
   const { handleSubmit, register, reset } = useForm<CommentSchemaType>({
     resolver: zodResolver(CommentSchema),

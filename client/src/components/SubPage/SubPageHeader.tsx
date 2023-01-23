@@ -8,11 +8,10 @@ interface SubPageHeaderProps {
 
 const SubPageHeader = (props: SubPageHeaderProps) => {
   const { id } = useParams();
-
   const navigate = useNavigate();
 
   const handleOnClick = () => {
-    navigate("/user/" + id);
+    navigate(`/user/${id}`);
   };
 
   return (

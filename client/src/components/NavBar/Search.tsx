@@ -41,8 +41,7 @@ const Search = () => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const search = watch("query");
+  watch("query");
 
   const navigate = useNavigate();
 

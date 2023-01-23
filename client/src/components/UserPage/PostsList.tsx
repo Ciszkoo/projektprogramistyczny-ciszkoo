@@ -2,30 +2,21 @@ import React, { useState } from "react";
 import Post from "../Post/Post";
 import {
   fetchMoreUserPosts,
-  Post as PostI,
   selectUserPosts,
   selectUserPostsCount,
 } from "../../reducers/postsReducer";
 import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
 import { useParams } from "react-router";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Card from "../Card/Card";
+import { LoadingCard } from "../Card/Card";
 
-interface PostsListProps {
-  posts: PostI[];
-}
-
-const PostsList = (props: PostsListProps) => {
+const PostsList = () => {
   const [page, setPage] = useState<number>(1);
 
   const { id } = useParams();
-
   const posts = useAppSelector(selectUserPosts);
-
   const isThereAnyPosts = posts.length > 0;
-
   const dispatch = useAppDispatch();
-
   const count = useAppSelector(selectUserPostsCount);
 
   const loadMorePosts = async () => {
@@ -36,21 +27,13 @@ const PostsList = (props: PostsListProps) => {
 
   return (
     <>
-      {!isThereAnyPosts && (
-        <Card customClass="flex justify-center">
-          <p>Loading...</p>
-        </Card>
-      )}
+      {!isThereAnyPosts && <LoadingCard />}
       <div className="w-full">
         <InfiniteScroll
           dataLength={posts.length}
           next={loadMorePosts}
           hasMore={posts.length < count - 1}
-          loader={
-            <Card customClass="flex justify-center">
-              <p>Loading...</p>
-            </Card>
-          }
+          loader={<LoadingCard />}
         >
           {posts.map((post) => {
             return <Post key={post.postId} post={post} />;
@@ -58,11 +41,6 @@ const PostsList = (props: PostsListProps) => {
         </InfiniteScroll>
       </div>
     </>
-    // <ul className="w-full">
-    //   {props.posts.map((s) => {
-    //     return <Post key={s.postId} post={s} />;
-    //   })}
-    // </ul>
   );
 };
 

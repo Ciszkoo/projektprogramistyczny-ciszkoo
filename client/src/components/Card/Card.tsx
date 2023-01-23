@@ -8,7 +8,21 @@ interface CardProps {
 
 const Card = (props: PropsWithChildren<CardProps>) => {
   return (
-    <div className={`bg-white rounded-xl p-5 shadow-lg ${props.customClass}`} onPointerOver={props.onHover} onPointerLeave={props.onBlur} >{props.children}</div>
+    <div
+      className={`bg-white rounded-xl p-5 shadow-lg ${props.customClass}`}
+      onPointerOver={props.onHover}
+      onPointerLeave={props.onBlur}
+    >
+      {props.children}
+    </div>
+  );
+};
+
+export const LoadingCard = () => {
+  return (
+    <Card customClass="flex justify-center">
+      <p>Loading...</p>
+    </Card>
   );
 };
 

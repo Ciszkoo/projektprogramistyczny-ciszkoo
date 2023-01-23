@@ -25,7 +25,11 @@ const Post = (props: PostProps) => {
   };
 
   return (
-    <Card customClass={`my-5 mt-0`} onHover={handleHoverMyPost} onBlur={handleBlurMyPost}>
+    <Card
+      customClass={`my-5 mt-0`}
+      onHover={handleHoverMyPost}
+      onBlur={handleBlurMyPost}
+    >
       <div>
         <PostHeader
           userId={props.post.userId}
