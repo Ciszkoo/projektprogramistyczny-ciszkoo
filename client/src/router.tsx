@@ -6,6 +6,8 @@ import MainRoute from "./routes/MainRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import UserInfoRoute from "./routes/UserInfoRoute";
 import UserRoute from "./routes/UserRoute";
+import { store } from "./store";
+import { fetchUserData } from "./reducers/userReducer";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +24,11 @@ export const router = createBrowserRouter([
             <UserRoute />
           </ProtectedRoute>
         ),
+        loader: ({ params }) => {
+          typeof params.id === "string" &&
+            store.dispatch(fetchUserData(params.id));
+          return null;
+        },
         children: [
           {
             path: "",

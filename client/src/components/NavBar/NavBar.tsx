@@ -2,8 +2,8 @@ import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
 import React from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthProvider";
-import { useAppDispatch, useAppSelector } from "../../reducers/hooks";
-import { fetchUserData, selectMyId } from "../../reducers/userReducer";
+import { useAppSelector } from "../../reducers/hooks";
+import { selectMyId } from "../../reducers/userReducer";
 import Button from "../Button/Button";
 import Search from "./Search";
 
@@ -14,10 +14,7 @@ const NavBar = () => {
 
   const navigate = useNavigate();
 
-  const dispatch = useAppDispatch();
-
   const handleMyProfile = async () => {
-    await dispatch(fetchUserData(myId));
     navigate(`/user/${myId}`);
   };
 

@@ -13,7 +13,7 @@ const UserTimeline = () => {
   return (
     <>
       {user.friendship === "me" && (
-        <Card customClass="w-full">
+        <Card customClass="w-full mb-5">
           <PostForm />
         </Card>
       )}

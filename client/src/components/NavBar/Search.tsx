@@ -5,8 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../reducers/hooks";
-import { fetchUserData } from "../../reducers/userReducer";
 
 const SearchFormSchema = z.object({
   query: z.string().max(50),
@@ -48,11 +46,8 @@ const Search = () => {
 
   const navigate = useNavigate();
 
-  const dispatch = useAppDispatch();
-
   const searchResultClickHandler = (id: string) => async () => {
     reset();
-    await dispatch(fetchUserData(id));
     navigate(`/user/${id}`);
   };
 

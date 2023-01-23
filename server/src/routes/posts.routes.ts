@@ -24,10 +24,10 @@ router.post(
 );
 
 // Usuwanie posta
-router.delete("/delete/:id", isAuth, deletePostHandler);
+router.delete("/:id", isAuth, deletePostHandler);
 
 // Edycja posta
-router.put("/edit/:id", isAuth, editPostHandler);
+router.put("/:id", isAuth, editPostHandler);
 
 // Polubienie posta
 router.put("/like/:id", isAuth, likePostHandler);

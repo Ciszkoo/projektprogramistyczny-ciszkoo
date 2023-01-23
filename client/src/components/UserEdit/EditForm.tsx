@@ -28,7 +28,7 @@ interface EditFormProps {
 const EditForm = (props: EditFormProps) => {
   const dispatch = useAppDispatch();
 
-  const id = useAppSelector(selectMyId)
+  const id = useAppSelector(selectMyId);
 
   const schema = z.object({ value: schemas[props.propName] });
   type SchemaType = z.infer<typeof schema>;
@@ -41,11 +41,9 @@ const EditForm = (props: EditFormProps) => {
 
   const onSubmit = async (data: SchemaType) => {
     try {
-      await axios.patch(
-        `/api/user/`,
-        data,
-        { params: {prop: props.propName}}
-      );
+      await axios.patch(`/api/user/`, data, {
+        params: { prop: props.propName },
+      });
       await dispatch(fetchUserData(id));
       console.log("Updated");
     } catch (error) {
@@ -57,21 +55,24 @@ const EditForm = (props: EditFormProps) => {
 
   // TODO: Add gender select
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-      <input
-        className={`input-sign ${errors.value && "invalid"}`}
-        placeholder={props.label}
-        {...register("value")}
-        disabled={isSubmitting}
-        {...(props.propName === "dateOfBirth" && { type: "date" })}
-      />
-      <button
-        className="w-min self-center p-2 bg-violet-200 rounded-full"
-        type="submit"
-      >
-        Zaaktualizuj
-      </button>
-    </form>
+    <>
+      <p className="font-bold">{props.label}:</p>
+      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+        <input
+          className={`input-sign ${errors.value && "invalid"}`}
+          placeholder={props.label}
+          {...register("value")}
+          disabled={isSubmitting}
+          {...(props.propName === "dateOfBirth" && { type: "date" })}
+        />
+        <button
+          className="w-min self-center p-2 bg-violet-200 rounded-full"
+          type="submit"
+        >
+          Zaaktualizuj
+        </button>
+      </form>
+    </>
   );
 };
 

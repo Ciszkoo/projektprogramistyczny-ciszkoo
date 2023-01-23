@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { createPortal } from "react-dom";
-import EditModal from "./EditModal";
 import { useAppSelector } from "../../reducers/hooks";
 import { selectMyId } from "../../reducers/userReducer";
 import { useParams } from "react-router";
+import { useModal } from "../Modal/Modal";
+import EditForm from "./EditForm";
 
 interface UserDataFieldProps {
   label: string;
@@ -13,26 +13,11 @@ interface UserDataFieldProps {
 }
 
 const UserDataField = (props: UserDataFieldProps) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const {id} = useParams()
+  const { id } = useParams();
   const myId = useAppSelector(selectMyId);
 
-  const openModalHandler = () => {
-    setShowModal(true);
-  };
-
-  const closeModalHandler = () => {
-    setShowModal(false);
-  };
-
-  const portal = createPortal(
-    <EditModal
-      closeModalHandler={closeModalHandler}
-      label={props.label}
-      propName={props.propName}
-    />,
-    document.body
+  const { openModal, modalPortal } = useModal(
+    <EditForm propName={props.propName} label={props.label} />
   );
 
   return (
@@ -41,11 +26,11 @@ const UserDataField = (props: UserDataFieldProps) => {
         {props.label}: {props.value}
       </p>
       {id === myId && (
-        <button onClick={openModalHandler}>
+        <button onClick={openModal}>
           <PencilSquareIcon className="w-6 h-6" />
         </button>
       )}
-      {showModal && portal}
+      {modalPortal}
     </div>
   );
 };

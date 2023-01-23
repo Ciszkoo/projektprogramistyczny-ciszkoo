@@ -6,7 +6,7 @@ import {
   fetchFriendsPosts,
   fetchUserPosts,
 } from "../../reducers/postsReducer";
-import { fetchUserData, selectMyId, selectUser } from "../../reducers/userReducer";
+import { selectMyId, selectUser } from "../../reducers/userReducer";
 import Button from "../Button/Button";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router";
@@ -47,7 +47,6 @@ const Comment = (props: CommentProps) => {
   const navigate = useNavigate();
 
   const handleNavigateToProfile = async () => {
-    await dispatch(fetchUserData(props.comment.userId));
     navigate(`/user/${props.comment.userId}`);
   };
 
