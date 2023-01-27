@@ -10,7 +10,6 @@ import {
   remove,
 } from "../service/friends.service";
 import { getFriendshipStatus } from "../service/user.service";
-import log from "../utils/logger";
 
 // Wysyłanie zaproszenia do znajomych
 export const inviteHandler = async (req: Request, res: Response) => {
@@ -128,7 +127,7 @@ export const getFriendshipStatusHandler = async (
   const id = req.params.id;
   const relation = await getFriendshipStatus(id, myId);
   if (!relation) {
-    return res.status(500).send({ message: "Couldn't get user info" });
+    return res.status(404).send({ message: "Couldn't get user info" });
   }
   return res.status(200).send({ friendship: relation });
 };

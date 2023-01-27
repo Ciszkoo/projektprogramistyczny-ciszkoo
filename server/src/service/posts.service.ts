@@ -13,10 +13,13 @@ export const createPost = async (
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       "MATCH (u:User {id: $userId}) CREATE (u)-[:POSTED]->(p:Post {id: apoc.create.uuid(), content: $content, at: apoc.date.currentTimestamp(), privacy: $privacy, image: $image}) RETURN p",
       { userId, content, privacy, image }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -30,9 +33,12 @@ export const deletePost = async (postId: string) => {
   const session = driver.session();
 
   try {
-    await session.run("MATCH (p:Post {id: $postId}) DETACH DELETE p", {
+    const res = await session.run("MATCH (p:Post {id: $postId}) DETACH DELETE p", {
       postId,
     });
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -52,7 +58,7 @@ export const editPost = async (
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       `MERGE (p:Post {id: $postId})${
         content !== null ? ` SET p.content = "${content}"` : ""
       }${privacy !== null ? ` SET p.privacy = "${privacy}"` : ""}${
@@ -60,6 +66,9 @@ export const editPost = async (
       } RETURN p`,
       { id, postId }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -73,10 +82,13 @@ export const likePost = async (id: string, postId: string) => {
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       "MATCH (u:User {id: $id}) MATCH (p:Post {id: $postId}) MERGE (u)-[:LIKED]->(p) RETURN p",
       { id, postId }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -90,10 +102,13 @@ export const unlikePost = async (id: string, postId: string) => {
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       "MATCH (u:User {id: $id})-[r:LIKED]->(p:Post {id: $postId}) DELETE r",
       { id, postId }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;

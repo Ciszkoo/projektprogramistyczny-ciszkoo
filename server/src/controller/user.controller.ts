@@ -32,7 +32,7 @@ export const getMyselfHandler = async (req: Request, res: Response) => {
   const id = req.session.passport?.user as string;
   const user = await getUserBy("id", id);
   if (!user) {
-    return res.status(401).send({ message: "Couldn't find user" });
+    return res.status(404).send({ message: "Couldn't find user" });
   }
   return res.status(200).send(omit(user, ["password"]));
 };
@@ -96,7 +96,7 @@ export const getUserHandler = async (req: Request, res: Response) => {
   const id = req.params.id;
   const user = await getUserBy("id", id);
   if (!user) {
-    return res.status(401).send({ message: "Couldn't find user" });
+    return res.status(404).send({ message: "Couldn't find user" });
   }
   const relation = myId === id ? "me" : await getFriendshipStatus(id, myId);
   if (!relation) {

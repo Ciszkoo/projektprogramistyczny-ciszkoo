@@ -37,10 +37,11 @@ router.delete("", isAuth, deleteUserHandler);
 // Pobieranie danych o aktualnie zalogowanym użytkowniku
 router.get("", isAuth, getMyselfHandler);
 
+// Edycja danych o aktualnie zalogowanym użytkowniku
+router.patch("", isAuth, validateResource(editSchema), editHandler);
+
 // Pobieranie danych o innym użytkowniku
 router.get("/:id", isAuth, getUserHandler);
 
-// Edycja danych o aktualnie zalogowanym użytkowniku
-router.patch("", isAuth, validateResource(editSchema), editHandler);
 
 export default router;

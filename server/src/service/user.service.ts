@@ -15,6 +15,9 @@ export const createUser = async (user: UserToCreate) => {
       "CREATE (u:User {id: apoc.create.uuid(), email: $email, firstName: $firstName, lastName: $lastName, password: $password, dateOfBirth: $dateOfBirth, gender: $gender, avatar: $avatar}) RETURN u.email",
       { ...userCandidate }
     );
+    if (!result.summary.counters.containsUpdates()) {
+      return false;
+    }
     const userEmail = result.records[0].get("u.email");
     log.info(`User created, ${userEmail}`);
     return true;
@@ -33,6 +36,9 @@ export const getUserBy = async (cond: "email" | "id", value: string) => {
       `MATCH (u:User {${cond}: $value}) RETURN u`,
       { value }
     );
+    if (!querryResult.records.length) {
+      return null;
+    }
     const user: UserNode = querryResult.records[0].get("u").properties;
     return user;
   } catch {
@@ -61,10 +67,13 @@ export const editData = async (prop: EditProp, value: string, id: string) => {
 export const deleteUser = async (id: string) => {
   const session = driver.session();
   try {
-    await session.run(
-      "MATCH (c:Comment)<-[:COMMENTED]-(u:User {id: $id})-[:POSTED]->(p:Post) DETACH DELETE u, c, p",
+    const res = await session.run(
+      "MATCH (c:Comment)<-[:COMMENTED]-(u:User {id: $id})-[:POSTED]->(p:Post)<-[:ON]-(c1:Comment) DETACH DELETE u, c, p, c1",
       { id }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     log.error("Could not delete user");

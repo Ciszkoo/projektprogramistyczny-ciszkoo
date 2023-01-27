@@ -13,7 +13,7 @@ export const search = async (id: string, query: string) => {
   const exp = `(?i).*${query}.*`;
 
   const results = await session.run(
-    "MATCH (u:User) WHERE (u.firstName =~ $exp OR u.lastName =~ $exp) AND NOT u.id = $id RETURN u.id, u.avatar, u.firstName, u.lastName LIMIT 5",
+    `CALL apoc.search.node('{User: ["firstName", "lastName"]}', '=~', $exp) YIELD node AS u WHERE NOT u.id = $id RETURN u LIMIT 5`,
     { exp, id }
   );
 
@@ -26,10 +26,10 @@ export const search = async (id: string, query: string) => {
 
   const mapped = results.records.map<SearchOutput>((record) => {
     return {
-      id: record.get("u.id"),
-      avatar: record.get("u.avatar"),
-      firstName: record.get("u.firstName"),
-      lastName: record.get("u.lastName"),
+      id: record.get("u").properties.id,
+      avatar: record.get("u").properties.avatar,
+      firstName: record.get("u").properties.firstName,
+      lastName: record.get("u").properties.lastName,
     };
   });
 

@@ -31,9 +31,12 @@ export const deleteComment = async (commentId: string) => {
   const session = driver.session();
 
   try {
-    await session.run("MATCH (c:Comment {id: $commentId}) DETACH DELETE c", {
+    const res = await session.run("MATCH (c:Comment {id: $commentId}) DETACH DELETE c", {
       commentId,
     });
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -47,10 +50,13 @@ export const editComment = async (commentId: string, content: string) => {
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       "MERGE (c:Comment {id: $commentId}) SET c.content = $content RETURN c",
       { commentId, content }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -64,10 +70,13 @@ export const likeComment = async (id: string, commentId: string) => {
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       "MATCH (u:User {id: $id}) MATCH (c:Comment {id: $commentId}) MERGE (u)-[r:LIKED]->(c) RETURN r",
       { id, commentId }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;
@@ -81,10 +90,13 @@ export const unlikeComment = async (id: string, commentId: string) => {
   const session = driver.session();
 
   try {
-    await session.run(
+    const res = await session.run(
       "MATCH (u:User {id: $id})-[r:LIKED]->(c:Comment {id: $commentId}) DELETE r",
       { id, commentId }
     );
+    if (!res.summary.counters.containsUpdates()) {
+      return false;
+    }
     return true;
   } catch (error) {
     return false;

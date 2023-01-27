@@ -165,7 +165,7 @@ export const getProposals = async (id: string) => {
 
   try {
     const result = await session.run(
-      "MATCH (u:User)-[:FRIENDS]->(f:User)-[:FRIENDS]->(u2:User) WHERE u.id = $id AND NOT u2.id=$id AND NOT (u)-[:FRIENDS]-(u2) AND NOT (u)-[:FRIEND_REQUEST]-(u2) RETURN u2",
+      `MATCH (u:User {id: $id}) CALL apoc.neighbors.athop(u, "FRIENDS", 2) YIELD node AS u2 RETURN u2`,
       { id }
     );
     const friends = result.records.map((record) => {

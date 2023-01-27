@@ -11,7 +11,7 @@ export const searchController = async (
 
   const result = await search(id, query.toLowerCase());
   if (!result) {
-    return res.status(404).send({ err: "Could not find users" });
+    return res.status(404).send({ message: "Could not find users" });
   }
   return res.status(200).send(result);
 };
